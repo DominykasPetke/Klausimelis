@@ -8,7 +8,7 @@ Veikimo principas – pačią kuriamą platformą sudaro dvi dalys: internetinė
 ## Objektai
 
 - Klausimas
-- Klausimų rinkinys (klausimynas)
+- Tema (klausimų rinkinys, klausimynas)
 - Sritis
 
 ## Funkciniai reikalavimai
