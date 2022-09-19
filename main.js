@@ -28,11 +28,16 @@ connection.end();
 
 
 app.get('/:text', (req, res) => {
-    res.send('Hello ' + req.params.text + '!' );
+    res.send('Hello ' + req.params.text + '!');
 });
 
 app.get('/', (req, res) => {
-    res.status(202).send('No params');
+    if (req.query.name != null) {
+        res.send('Hi ' + req.query.name + '!');
+    }
+    else {
+        res.status(202).send('No params');
+    }
 });
 
 app.listen(port, () => {
