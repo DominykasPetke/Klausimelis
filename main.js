@@ -100,8 +100,8 @@ app.put(api_header + '/topics/:topicId/themes/:themeId', (req, res) => {
 
 app.patch(api_header + '/topics/:topicId/themes', (req, res) => {
     var ret = not_implemented_error;
-    ret.text = "PATCH";
     ret.topicId = req.params.topicId;
+    ret.text = "PATCH";
     res.status(501).json(ret);
 });
 
@@ -113,6 +113,52 @@ app.delete(api_header + '/topics/:topicId/themes/:themeId', (req, res) => {
     res.status(501).json(ret);
 });
 
+// questions
+app.get(api_header + '/topics/:topicId/themes/:themeId/questions', (req, res) => {
+    // potentially with no answers here?
+    var ret = not_implemented_error;
+    ret.topicId = req.params.topicId;
+    ret.themeId = req.params.themeId;
+    ret.text = "GET REQUEST";
+    res.status(501).json(ret);
+});
+
+app.get(api_header + '/topics/:topicId/themes/:themeId/questions/:questionId', (req, res) => {
+    // potentially include answers here?
+    var ret = not_implemented_error;
+    ret.topicId = req.params.topicId;
+    ret.themeId = req.params.themeId;
+    ret.questionId = req.params.questionId;
+    res.status(501).json(ret);
+});
+
+app.post(api_header + '/topics/:topicId/themes/:themeId/questions', (req, res) => {
+    var ret = not_implemented_error;
+    ret.topicId = req.params.topicId;
+    ret.themeId = req.params.themeId;
+    ret.text = "POST REQUEST";
+    res.status(501).json(ret);
+});
+
+app.put(api_header + '/topics/:topicId/themes/:themeId/questions/:questionId', (req, res) => {
+    var ret = not_implemented_error;
+    ret.topicId = req.params.topicId;
+    ret.themeId = req.params.themeId;
+    ret.questionId = req.params.questionId;
+    ret.text = "PUT";
+    res.status(501).json(ret);
+});
+
+app.delete(api_header + '/topics/:topicId/themes/:themeId/questions/:questionId', (req, res) => {
+    var ret = not_implemented_error;
+    ret.topicId = req.params.topicId;
+    ret.themeId = req.params.themeId;
+    ret.questionId = req.params.questionId;
+    ret.text = "DELETE";
+    res.status(501).json(ret);
+});
+
+// miscellaneous
 app.listen(port, () => {
     console.log(`Klausimėlis listening on port ${port}`);
 });
