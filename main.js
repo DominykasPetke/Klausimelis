@@ -29,6 +29,7 @@ connection.end();
 const api_header = "/api/v1";
 const not_implemented_error = { code: 501, err: "NOT_IMPLEMENTED", message: "Not implemented (yet)" };
 
+// topics
 app.get(api_header + '/topics', (req, res) => {
     var ret = not_implemented_error;
     ret.text = "GET REQUEST";
@@ -37,7 +38,7 @@ app.get(api_header + '/topics', (req, res) => {
 
 app.get(api_header + '/topics/:topicId', (req, res) => {
     var ret = not_implemented_error;
-    ret.id = req.params.topicId;
+    ret.topicId = req.params.topicId;
     res.status(501).json(ret);
 });
 
@@ -49,7 +50,7 @@ app.post(api_header + '/topics', (req, res) => {
 
 app.put(api_header + '/topics/:topicId', (req, res) => {
     var ret = not_implemented_error;
-    ret.id = req.params.topicId;
+    ret.topicId = req.params.topicId;
     ret.text = "PUT";
     res.status(501).json(ret);
 });
@@ -62,7 +63,52 @@ app.patch(api_header + '/topics', (req, res) => {
 
 app.delete(api_header + '/topics/:topicId', (req, res) => {
     var ret = not_implemented_error;
-    ret.id = req.params.topicId;
+    ret.topicId = req.params.topicId;
+    ret.text = "DELETE";
+    res.status(501).json(ret);
+});
+
+// themes
+app.get(api_header + '/topics/:topicId/themes', (req, res) => {
+    var ret = not_implemented_error;
+    ret.topicId = req.params.topicId;
+    ret.text = "GET REQUEST";
+    res.status(501).json(ret);
+});
+
+app.get(api_header + '/topics/:topicId/themes/:themeId', (req, res) => {
+    var ret = not_implemented_error;
+    ret.topicId = req.params.topicId;
+    ret.themeId = req.params.themeId;
+    res.status(501).json(ret);
+});
+
+app.post(api_header + '/topics/:topicId/themes', (req, res) => {
+    var ret = not_implemented_error;
+    ret.topicId = req.params.topicId;
+    ret.text = "POST REQUEST";
+    res.status(501).json(ret);
+});
+
+app.put(api_header + '/topics/:topicId/themes/:themeId', (req, res) => {
+    var ret = not_implemented_error;
+    ret.topicId = req.params.topicId;
+    ret.themeId = req.params.themeId;
+    ret.text = "PUT";
+    res.status(501).json(ret);
+});
+
+app.patch(api_header + '/topics/:topicId/themes', (req, res) => {
+    var ret = not_implemented_error;
+    ret.text = "PATCH";
+    ret.topicId = req.params.topicId;
+    res.status(501).json(ret);
+});
+
+app.delete(api_header + '/topics/:topicId/themes/:themeId', (req, res) => {
+    var ret = not_implemented_error;
+    ret.topicId = req.params.topicId;
+    ret.themeId = req.params.themeId;
     ret.text = "DELETE";
     res.status(501).json(ret);
 });
