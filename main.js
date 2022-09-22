@@ -13,7 +13,7 @@ const connection = mysql.createConnection({
     host: 'localhost',
     user: 'dominykas',
     password: 'password',
-    database: 'test'
+    database: 'klausimelis'
 });
 
 connection.connect();
