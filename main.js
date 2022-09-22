@@ -48,15 +48,9 @@ app.post(api_header + '/topics', (req, res) => {
     res.status(501).json(ret);
 });
 
-app.put(api_header + '/topics/:topicId', (req, res) => {
+app.patch(api_header + '/topics/:topicId', (req, res) => {
     var ret = not_implemented_error;
     ret.topicId = req.params.topicId;
-    ret.text = "PUT";
-    res.status(501).json(ret);
-});
-
-app.patch(api_header + '/topics', (req, res) => {
-    var ret = not_implemented_error;
     ret.text = "PATCH";
     res.status(501).json(ret);
 });
@@ -90,17 +84,10 @@ app.post(api_header + '/topics/:topicId/themes', (req, res) => {
     res.status(501).json(ret);
 });
 
-app.put(api_header + '/topics/:topicId/themes/:themeId', (req, res) => {
+app.patch(api_header + '/topics/:topicId/themes/:themeId', (req, res) => {
     var ret = not_implemented_error;
     ret.topicId = req.params.topicId;
     ret.themeId = req.params.themeId;
-    ret.text = "PUT";
-    res.status(501).json(ret);
-});
-
-app.patch(api_header + '/topics/:topicId/themes', (req, res) => {
-    var ret = not_implemented_error;
-    ret.topicId = req.params.topicId;
     ret.text = "PATCH";
     res.status(501).json(ret);
 });
