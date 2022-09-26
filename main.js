@@ -18,14 +18,13 @@ const connection = mysql.createConnection({
 
 connection.connect();
 
-connection.query('SELECT 1 + 1 AS solution', (err, rows, fields) => {
+connection.query('SELECT 21 + 21 AS solution', (err, rows, fields) => {
     if (err) throw err;
 
-    console.log('The solution is: ', rows[0].solution);
+    console.log('The answer to life is:', rows[0].solution);
 });
 
-connection.on('error', function(err) {
-    console.log("zaksjhsaihslkaj0");
+connection.on('error', function (err) {
     console.log(err); // 'ER_BAD_DB_ERROR'
 });
 
@@ -33,24 +32,15 @@ connection.on('error', function(err) {
 
 const api_header = "/api/v1";
 const not_implemented_error = { code: 501, err: "NOT_IMPLEMENTED", message: "Not implemented (yet)" };
+const not_found_error = { code: 404, err: "NOT_FOUND", message: "Page not found" };
 
 // topics
 app.get(api_header + '/topics', (req, res) => {
-    try {
-        // connection.connect((err) => { if (err) throw err; });
-        connection.query('SELECT `topics`.`id`, `topics`.`name`, `topics`.`description` FROM `klausimelis`.`topics`;', (err, rows, fields) => {
-            if (err) throw err;
+    connection.query('SELECT `topics`.`id`, `topics`.`name`, `topics`.`description` FROM `klausimelis`.`topics`;', (err, rows, fields) => {
+        if (err) throw err;
 
-            console.log('Got ', rows);
-            res.status(200).json(rows);
-        });
-        // connection.end();
-    }
-    catch (e) {
-        console.log(e);
-        console.log("zzzzzzz");
-        catcher(e, req, res, null);
-    }
+        res.status(200).json(rows);
+    });
 });
 
 app.get(api_header + '/topics/:topicId', (req, res) => {
@@ -168,7 +158,7 @@ app.listen(port, () => {
 });
 
 app.use((req, res, next) => {
-    res.status(404).json({ code: 404, err: "NOT_FOUND", message: "Page not found" });
+    res.status(404).json(not_found_error);
 });
 
 app.use(catcher);
