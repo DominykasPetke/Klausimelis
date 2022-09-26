@@ -5,7 +5,7 @@
 // express.js init
 const express = require('express');
 const app = express();
-const port = 3000;
+const port = 3001;
 
 // db init
 const mysql = require('mysql');
@@ -44,9 +44,17 @@ app.get(api_header + '/topics', (req, res) => {
 });
 
 app.get(api_header + '/topics/:topicId', (req, res) => {
-    var ret = not_implemented_error;
-    ret.topicId = req.params.topicId;
-    res.status(501).json(ret);
+    connection.query('SELECT `topics`.`id`, `topics`.`name`, `topics`.`description` FROM `klausimelis`.`topics` WHERE `id` = ?;',
+        [req.params.topicId],
+        (err, rows, fields) => {
+            if (err) throw err;
+
+            if (rows.length < 1) {
+                res.status(404).json(not_found_error);
+            }
+
+            res.status(200).json(rows[0]);
+        });
 });
 
 app.post(api_header + '/topics', (req, res) => {
