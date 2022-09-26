@@ -104,10 +104,18 @@ app.get(api_header + '/topics/:topicId/themes', (req, res) => {
 });
 
 app.get(api_header + '/topics/:topicId/themes/:themeId', (req, res) => {
-    var ret = not_implemented_error;
-    ret.topicId = req.params.topicId;
-    ret.themeId = req.params.themeId;
-    res.status(501).json(ret);
+    connection.query('SELECT `themes`.`id`, `themes`.`name`, `themes`.`description` FROM `klausimelis`.`themes` WHERE `FK_topicId` = ? AND `id` = ?;',
+        [req.params.topicId, req.params.themeId],
+        (err, rows, fields) => {
+            if (err) throw err;
+
+            if (rows.length < 1) {
+                res.status(404).json(not_found_error);
+                return;
+            }
+
+            res.status(200).json(rows[0]);
+        });
 });
 
 app.post(api_header + '/topics/:topicId/themes', (req, res) => {
