@@ -164,11 +164,33 @@ app.get(api_header + '/topics/:topicId/themes/:themeId/questions', (req, res) =>
 
 app.get(api_header + '/topics/:topicId/themes/:themeId/questions/:questionId', (req, res) => {
     // potentially include answers here?
-    var ret = not_implemented_error;
-    ret.topicId = req.params.topicId;
-    ret.themeId = req.params.themeId;
-    ret.questionId = req.params.questionId;
-    res.status(501).json(ret);
+    connection.query('SELECT 1 FROM `klausimelis`.`themes` WHERE `FK_topicId` = ? AND `id` = ?;',
+        [req.params.topicId, req.params.themeId],
+        (err, rows, fields) => {
+            if (rows.length < 1) {
+                res.status(404).json(not_found_error);
+                return;
+            }
+
+            connection.query('SELECT `questions`.`id`, `questions`.`question`, `questions`.`answers` FROM `klausimelis`.`questions` WHERE `FK_themeId` = ? AND `id` = ?',
+                [req.params.themeId, req.params.questionId],
+                (err, rows, fields) => {
+                    if (err) throw err;
+
+                    if (rows.length < 1) {
+                        res.status(404).json(not_found_error);
+                        return;
+                    }
+
+                    // potentially with no answers here?
+                    rows.forEach(element => {
+                        element.answers = JSON.parse(element.answers);
+                        // delete element.answers;
+                    });
+
+                    res.status(200).json(rows[0]);
+                });
+        });
 });
 
 app.post(api_header + '/topics/:topicId/themes/:themeId/questions', (req, res) => {
