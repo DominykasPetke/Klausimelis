@@ -93,11 +93,6 @@ app.get(api_header + '/topics/:topicId/themes', (req, res) => {
                 (err, rows, fields) => {
                     if (err) throw err;
 
-                    if (rows.length < 1) {
-                        res.status(404).json(not_found_error);
-                        return;
-                    }
-
                     res.status(200).json(rows);
                 });
         });
@@ -143,12 +138,28 @@ app.delete(api_header + '/topics/:topicId/themes/:themeId', (req, res) => {
 
 // questions
 app.get(api_header + '/topics/:topicId/themes/:themeId/questions', (req, res) => {
-    // potentially with no answers here?
-    var ret = not_implemented_error;
-    ret.topicId = req.params.topicId;
-    ret.themeId = req.params.themeId;
-    ret.text = "GET REQUEST";
-    res.status(501).json(ret);
+    connection.query('SELECT 1 FROM `klausimelis`.`themes` WHERE `FK_topicId` = ? AND `id` = ?;',
+        [req.params.topicId, req.params.themeId],
+        (err, rows, fields) => {
+            if (rows.length < 1) {
+                res.status(404).json(not_found_error);
+                return;
+            }
+
+            connection.query('SELECT `questions`.`id`, `questions`.`question`, `questions`.`answers` FROM `klausimelis`.`questions` WHERE `FK_themeId` = ?;',
+                [req.params.themeId],
+                (err, rows, fields) => {
+                    if (err) throw err;
+
+                    // potentially with no answers here?
+                    rows.forEach(element => {
+                        element.answers = JSON.parse(element.answers);
+                        // delete element.answers;
+                    });
+
+                    res.status(200).json(rows);
+                });
+        });
 });
 
 app.get(api_header + '/topics/:topicId/themes/:themeId/questions/:questionId', (req, res) => {
