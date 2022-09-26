@@ -24,16 +24,33 @@ connection.query('SELECT 1 + 1 AS solution', (err, rows, fields) => {
     console.log('The solution is: ', rows[0].solution);
 });
 
-connection.end();
+connection.on('error', function(err) {
+    console.log("zaksjhsaihslkaj0");
+    console.log(err); // 'ER_BAD_DB_ERROR'
+});
+
+// connection.end();
 
 const api_header = "/api/v1";
 const not_implemented_error = { code: 501, err: "NOT_IMPLEMENTED", message: "Not implemented (yet)" };
 
 // topics
 app.get(api_header + '/topics', (req, res) => {
-    var ret = not_implemented_error;
-    ret.text = "GET REQUEST";
-    res.status(501).json(ret);
+    try {
+        // connection.connect((err) => { if (err) throw err; });
+        connection.query('SELECT `topics`.`id`, `topics`.`name`, `topics`.`description` FROM `klausimelis`.`topics`;', (err, rows, fields) => {
+            if (err) throw err;
+
+            console.log('Got ', rows);
+            res.status(200).json(rows);
+        });
+        // connection.end();
+    }
+    catch (e) {
+        console.log(e);
+        console.log("zzzzzzz");
+        catcher(e, req, res, null);
+    }
 });
 
 app.get(api_header + '/topics/:topicId', (req, res) => {
@@ -154,7 +171,9 @@ app.use((req, res, next) => {
     res.status(404).json({ code: 404, err: "NOT_FOUND", message: "Page not found" });
 });
 
-app.use((err, req, res, next) => {
+app.use(catcher);
+
+function catcher(err, req, res, next) {
     console.error(err.stack);
     res.status(500).json({ code: 500, err: "SERVER_ERROR", message: "Internal Server Error" });
-});
+}
