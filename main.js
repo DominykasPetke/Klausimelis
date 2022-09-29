@@ -129,10 +129,21 @@ app.patch(api_header + '/topics/:topicId', (req, res) => {
 });
 
 app.delete(api_header + '/topics/:topicId', (req, res) => {
-    var ret = not_implemented_error;
-    ret.topicId = req.params.topicId;
-    ret.text = "DELETE";
-    res.status(501).json(ret);
+    connection.query('DELETE FROM `topics` WHERE `id` = ? RETURNING *;',
+        [req.params.topicId],
+        (err, rows, fields) => {
+            if (err) {
+                error500(err, req, res, null);
+                return;
+            }
+
+            if (rows.length < 1) {
+                res.status(404).json(not_found_error);
+                return;
+            }
+
+            res.status(200).send();
+        });
 });
 
 // themes
