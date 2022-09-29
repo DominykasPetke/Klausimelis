@@ -142,7 +142,7 @@ app.delete(api_header + '/topics/:topicId', (req, res) => {
                 return;
             }
 
-            res.status(200).sendJSON(rows[0]);
+            res.status(200).json(rows[0]);
         });
 });
 
@@ -277,7 +277,7 @@ app.delete(api_header + '/topics/:topicId/themes/:themeId', (req, res) => {
                 return;
             }
 
-            res.status(200).sendJSON(rows[0]);
+            res.status(200).json(rows[0]);
         });
 });
 
@@ -444,12 +444,35 @@ app.put(api_header + '/topics/:topicId/themes/:themeId/questions/:questionId', (
 });
 
 app.delete(api_header + '/topics/:topicId/themes/:themeId/questions/:questionId', (req, res) => {
-    var ret = not_implemented_error;
-    ret.topicId = req.params.topicId;
-    ret.themeId = req.params.themeId;
-    ret.questionId = req.params.questionId;
-    ret.text = "DELETE";
-    res.status(501).json(ret);
+    connection.query('SELECT 1 FROM `themes` WHERE `FK_topicId` = ? AND `id` = ?;',
+        [req.params.topicId, req.params.themeId],
+        (err, rows, fields) => {
+            if (err) {
+                error500(err, req, res, null);
+                return;
+            }
+
+            if (rows.length < 1) {
+                res.status(404).json(not_found_error);
+                return;
+            }
+
+            connection.query('DELETE FROM `questions` WHERE `FK_themeId` = ? AND `id` = ? RETURNING *;',
+                [req.params.themeId, req.params.questionId],
+                (err, rows, fields) => {
+                    if (err) {
+                        error500(err, req, res, null);
+                        return;
+                    }
+
+                    if (rows.length < 1) {
+                        res.status(404).json(not_found_error);
+                        return;
+                    }
+
+                    res.status(200).json(rows[0]);
+                });
+        });
 });
 
 // hierarchinis
