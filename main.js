@@ -90,10 +90,42 @@ app.post(api_header + '/topics', (req, res) => {
 });
 
 app.patch(api_header + '/topics/:topicId', (req, res) => {
-    var ret = not_implemented_error;
-    ret.topicId = req.params.topicId;
-    ret.text = "PATCH";
-    res.status(501).json(ret);
+    var clean = cleanUpInput(req.body, ["name", "description"]);
+
+    if (Object.keys(clean).length < 1) {
+        res.status(400).json({ code: 400, err: "BAD_REQUEST", message: "Not enough paramaters supplied" });
+        return;
+    }
+
+    connection.query('SELECT 1 FROM `topics` WHERE `id` = ?;',
+        [req.params.topicId],
+        (err, rows, fields) => {
+            if (err) {
+                error500(err, req, res, null);
+                return;
+            }
+
+            if (rows.length < 1) {
+                res.status(404).json(not_found_error);
+                return;
+            }
+
+            connection.query('UPDATE `topics` SET ? WHERE `id` = ?;',
+                [clean, req.params.topicId],
+                (err, rows, fields) => {
+                    if (err) {
+                        error500(err, req, res, null);
+                        return;
+                    }
+
+                    if (rows.length < 1) {
+                        error500(err, req, res, null);
+                        return;
+                    }
+
+                    res.sendStatus(204);
+                });
+        });
 });
 
 app.delete(api_header + '/topics/:topicId', (req, res) => {
