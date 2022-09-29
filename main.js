@@ -321,6 +321,7 @@ app.use((req, res, next) => {
 app.use(function (err, req, res, next) {
     if (err.type == "entity.parse.failed") {
         res.status(400).json({ code: 400, err: "BAD_REQUEST", message: "JSON parsing failed" });
+        return;
     }
 
     error500(err, req, res, next);
