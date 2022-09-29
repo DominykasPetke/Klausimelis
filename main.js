@@ -28,8 +28,6 @@ connection.on('error', function (err) {
     console.log(err); // 'ER_BAD_DB_ERROR'
 });
 
-// connection.end();
-
 const api_header = "/api/v1";
 const not_implemented_error = { code: 501, err: "NOT_IMPLEMENTED", message: "Not implemented (yet)" };
 const not_found_error = { code: 404, err: "NOT_FOUND", message: "Page not found" };
@@ -217,6 +215,41 @@ app.delete(api_header + '/topics/:topicId/themes/:themeId/questions/:questionId'
     ret.questionId = req.params.questionId;
     ret.text = "DELETE";
     res.status(501).json(ret);
+});
+
+// hierarchinis
+app.get(api_header + '/topics/:topicId/questions', (req, res) => {
+    connection.query('SELECT 1 FROM `klausimelis`.`topics` WHERE `id` = ?;',
+        [req.params.topicId],
+        (err, rows, fields) => {
+            if (rows.length < 1) {
+                res.status(404).json(not_found_error);
+                return;
+            }
+
+            connection.query('SELECT `questions`.`id`, `questions`.`FK_themeId` as themeId, `questions`.`question`, `questions`.`answers`, `themes`.`name`, `themes`.`description` FROM `klausimelis`.`questions` LEFT JOIN `klausimelis`.`themes` ON `questions`.`FK_themeId` = `themes`.`id` WHERE `themes`.`FK_topicId` = ?;',
+                [req.params.topicId],
+                (err, rows, fields) => {
+                    if (err) throw err;
+
+                    // potentially with no answers here?
+                    rows.forEach(element => {
+                        element.answers = JSON.parse(element.answers);
+                        // delete element.answers;
+
+                        element.theme = {};
+                        element.theme.id = element.themeId;
+                        element.theme.name = element.name;
+                        element.theme.description = element.description;
+
+                        delete element.themeId;
+                        delete element.name;
+                        delete element.description;
+                    });
+
+                    res.status(200).json(rows);
+                });
+        });
 });
 
 // miscellaneous
