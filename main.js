@@ -27,7 +27,8 @@ connection.query('SELECT 21 + 21 AS solution', (err, rows, fields) => {
 });
 
 connection.on('error', function (err) {
-    console.log(err); // 'ER_BAD_DB_ERROR'
+    catcher(err);
+    // console.log(err); // 'ER_BAD_DB_ERROR'
 });
 
 const api_header = "/api/v1";
@@ -64,15 +65,17 @@ app.post(api_header + '/topics', (req, res) => {
     connection.query('INSERT INTO `topics` SET ? RETURNING *;',
         [clean],
         (err, rows, fields) => {
-            if (err) throw err;
-
-            if (rows.length < 1) {
-                res.status(404).json(not_found_error);
+            if (err) {
+                catcher(err, req, res, null);
                 return;
             }
 
-            res.location(api_header + "/topics/" + rows.insertId); 
-            res.status(201).json(rows[0]);
+            if (rows.length < 1) {
+                catcher(err, req, res, null);
+                return;
+            }
+
+            res.location(api_header + "/topics/" + rows[0].id).status(201).json(rows[0]);
         });
 });
 
@@ -278,14 +281,14 @@ app.use((req, res, next) => {
 app.use(catcher);
 
 function catcher(err, req, res, next) {
-    console.error(err.stack);
+    console.error(err);
     res.status(500).json({ code: 500, err: "SERVER_ERROR", message: "Internal Server Error" });
 }
 
 function cleanUpInput(object, valid_keys) {
     var ret = {};
 
-    valid_keys.forEach(key => {ret[key] = object[key];});
+    valid_keys.forEach(key => { ret[key] = object[key]; });
 
     return ret;
 }
