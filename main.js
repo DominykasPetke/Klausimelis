@@ -27,8 +27,7 @@ connection.query('SELECT 21 + 21 AS solution', (err, rows, fields) => {
 });
 
 connection.on('error', function (err) {
-    catcher(err);
-    // console.log(err); // 'ER_BAD_DB_ERROR'
+    console.log(err); // 'ER_BAD_DB_ERROR'
 });
 
 const api_header = "/api/v1";
@@ -39,7 +38,7 @@ const not_found_error = { code: 404, err: "NOT_FOUND", message: "Page not found"
 app.get(api_header + '/topics', (req, res) => {
     connection.query('SELECT * FROM `topics`;', (err, rows, fields) => {
         if (err) {
-            catcher(err, req, res, null);
+            error500(err, req, res, null);
             return;
         }
 
@@ -52,7 +51,7 @@ app.get(api_header + '/topics/:topicId', (req, res) => {
         [req.params.topicId],
         (err, rows, fields) => {
             if (err) {
-                catcher(err, req, res, null);
+                error500(err, req, res, null);
                 return;
             }
 
@@ -72,12 +71,12 @@ app.post(api_header + '/topics', (req, res) => {
         [clean],
         (err, rows, fields) => {
             if (err) {
-                catcher(err, req, res, null);
+                error500(err, req, res, null);
                 return;
             }
 
             if (rows.length < 1) {
-                catcher(err, req, res, null);
+                error500(err, req, res, null);
                 return;
             }
 
@@ -105,7 +104,7 @@ app.get(api_header + '/topics/:topicId/themes', (req, res) => {
         [req.params.topicId],
         (err, rows, fields) => {
             if (err) {
-                catcher(err, req, res, null);
+                error500(err, req, res, null);
                 return;
             }
 
@@ -118,7 +117,7 @@ app.get(api_header + '/topics/:topicId/themes', (req, res) => {
                 [req.params.topicId],
                 (err, rows, fields) => {
                     if (err) {
-                        catcher(err, req, res, null);
+                        error500(err, req, res, null);
                         return;
                     }
 
@@ -132,7 +131,7 @@ app.get(api_header + '/topics/:topicId/themes/:themeId', (req, res) => {
         [req.params.topicId, req.params.themeId],
         (err, rows, fields) => {
             if (err) {
-                catcher(err, req, res, null);
+                error500(err, req, res, null);
                 return;
             }
 
@@ -174,7 +173,7 @@ app.get(api_header + '/topics/:topicId/themes/:themeId/questions', (req, res) =>
         [req.params.topicId, req.params.themeId],
         (err, rows, fields) => {
             if (err) {
-                catcher(err, req, res, null);
+                error500(err, req, res, null);
                 return;
             }
 
@@ -187,7 +186,7 @@ app.get(api_header + '/topics/:topicId/themes/:themeId/questions', (req, res) =>
                 [req.params.themeId],
                 (err, rows, fields) => {
                     if (err) {
-                        catcher(err, req, res, null);
+                        error500(err, req, res, null);
                         return;
                     }
 
@@ -208,7 +207,7 @@ app.get(api_header + '/topics/:topicId/themes/:themeId/questions/:questionId', (
         [req.params.topicId, req.params.themeId],
         (err, rows, fields) => {
             if (err) {
-                catcher(err, req, res, null);
+                error500(err, req, res, null);
                 return;
             }
 
@@ -221,7 +220,7 @@ app.get(api_header + '/topics/:topicId/themes/:themeId/questions/:questionId', (
                 [req.params.themeId, req.params.questionId],
                 (err, rows, fields) => {
                     if (err) {
-                        catcher(err, req, res, null);
+                        error500(err, req, res, null);
                         return;
                     }
 
@@ -273,7 +272,7 @@ app.get(api_header + '/topics/:topicId/questions', (req, res) => {
         [req.params.topicId],
         (err, rows, fields) => {
             if (err) {
-                catcher(err, req, res, null);
+                error500(err, req, res, null);
                 return;
             }
 
@@ -286,7 +285,7 @@ app.get(api_header + '/topics/:topicId/questions', (req, res) => {
                 [req.params.topicId],
                 (err, rows, fields) => {
                     if (err) {
-                        catcher(err, req, res, null);
+                        error500(err, req, res, null);
                         return;
                     }
 
@@ -319,9 +318,16 @@ app.use((req, res, next) => {
     res.status(404).json(not_found_error);
 });
 
-app.use(catcher);
+app.use(function (err, req, res, next) {
+    if (err.type == "entity.parse.failed") {
+        res.status(400).json({ code: 400, err: "BAD_REQUEST", message: "JSON parsing failed" });
+    }
 
-function catcher(err, req, res, next) {
+    error500(err, req, res, next);
+    return;
+});
+
+function error500(err, req, res, next) {
     console.error(err);
     res.status(500).json({ code: 500, err: "SERVER_ERROR", message: "Internal Server Error" });
 }
@@ -329,7 +335,7 @@ function catcher(err, req, res, next) {
 function cleanUpInput(object, valid_keys) {
     var ret = {};
 
-    valid_keys.forEach(key => { ret[key] = object[key]; });
+    valid_keys.forEach(key => { if (object[key] != null) ret[key] = object[key]; });
 
     return ret;
 }
