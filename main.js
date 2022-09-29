@@ -355,11 +355,83 @@ app.get(api_header + '/topics/:topicId/themes/:themeId/questions/:questionId', (
 });
 
 app.post(api_header + '/topics/:topicId/themes/:themeId/questions', (req, res) => {
-    var ret = not_implemented_error;
-    ret.topicId = req.params.topicId;
-    ret.themeId = req.params.themeId;
-    ret.text = "POST REQUEST";
-    res.status(501).json(ret);
+    connection.query('SELECT 1 FROM `themes` WHERE `FK_topicId` = ? AND `id` = ?;',
+        [req.params.topicId, req.params.themeId],
+        (err, rows, fields) => {
+            if (err) {
+                error500(err, req, res, null);
+                return;
+            }
+
+            if (rows.length < 1) {
+                res.status(404).json(not_found_error);
+                return;
+            }
+
+            var clean = cleanUpInput(req.body, ["question", "answers"]);
+
+            if (!allRequiredKeysExist(clean, ["question", "answers"])) {
+                res.status(400).json({ code: 400, err: "BAD_REQUEST", message: "Not enough paramaters supplied" });
+                return;
+            }
+
+            if (!(arr => {
+                return Object.prototype.toString.call(arr) === '[object Array]';
+            })(clean.answers)) {
+                res.status(400).json({ code: 400, err: "BAD_REQUEST", message: "Bad request (answers not an array)" });
+                return;
+            }
+
+            var is_correct_count = 0;
+
+            clean.answers.forEach((ans, index, arr) => {
+                arr[index] = cleanUpInput(ans, ["answer", "is_correct"]);
+
+                if (arr[index].is_correct === true) { is_correct_count++; }
+
+                if (Object.keys(arr[index]).length < 1) { arr[index] = null; }
+            });
+
+            clean.answers = clean.answers.filter(val => { return val !== null; });
+
+            if (clean.answers.length < 1) {
+                res.status(400).json({ code: 400, err: "BAD_REQUEST", message: "Not enough answers supplied" });
+                return;
+            }
+
+            if (is_correct_count < 1) {
+                res.status(400).json({ code: 400, err: "BAD_REQUEST", message: "No correct answers supplied" });
+                return;
+            }
+
+            clean.FK_themeId = req.params.themeId;
+            clean.answers = JSON.stringify(clean.answers);
+
+            connection.query('INSERT INTO `questions` SET ? RETURNING `questions`.`id`, `questions`.`question`, `questions`.`answers`',
+                [clean],
+                (err, rows, fields) => {
+                    if (err) {
+                        if (err.code == 'ER_NO_REFERENCED_ROW_2') { // technically should never trigger
+                            res.status(404).json(not_found_error);
+                            return;
+                        }
+
+                        error500(err, req, res, null);
+                        return;
+                    }
+
+                    if (rows.length < 1) {
+                        error500(err, req, res, null);
+                        return;
+                    }
+
+                    rows.forEach(element => {
+                        element.answers = JSON.parse(element.answers);
+                    });
+
+                    res.location(api_header + "/topics/" + req.params.topicId + "/themes/" + req.params.themeId + "/questions/" + rows[0].id).status(201).json(rows[0]);
+                });
+        });
 });
 
 app.put(api_header + '/topics/:topicId/themes/:themeId/questions/:questionId', (req, res) => {
