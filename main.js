@@ -193,10 +193,35 @@ app.get(api_header + '/topics/:topicId/themes/:themeId', (req, res) => {
 });
 
 app.post(api_header + '/topics/:topicId/themes', (req, res) => {
-    var ret = not_implemented_error;
-    ret.topicId = req.params.topicId;
-    ret.text = "POST REQUEST";
-    res.status(501).json(ret);
+    var clean = cleanUpInput(req.body, ["name", "description"]);
+
+    if (!allRequiredKeysExist(clean, ["name"])) {
+        res.status(400).json({ code: 400, err: "BAD_REQUEST", message: "Not enough paramaters supplied" });
+        return;
+    }
+
+    clean.FK_topicId = req.params.topicId;
+
+    connection.query('INSERT INTO `themes` SET ? RETURNING `themes`.`id`, `themes`.`name`, `themes`.`description`;',
+        [clean],
+        (err, rows, fields) => {
+            if (err) {
+                if (err.code == 'ER_NO_REFERENCED_ROW_2') {
+                    res.status(404).json(not_found_error);
+                    return;
+                }
+
+                error500(err, req, res, null);
+                return;
+            }
+
+            if (rows.length < 1) {
+                error500(err, req, res, null);
+                return;
+            }
+
+            res.location(api_header + "/topics/" + req.params.topicId + "/themes/" + rows[0].id).status(201).json(rows[0]);
+        });
 });
 
 app.patch(api_header + '/topics/:topicId/themes/:themeId', (req, res) => {
@@ -390,7 +415,7 @@ function cleanUpInput(object, valid_keys) {
 }
 
 function allRequiredKeysExist(object, required_keys) {
-    for (var key in required_keys) {
+    for (var key of required_keys) {
         if (object[key] == null) {
             return false;
         }
