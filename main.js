@@ -7,6 +7,8 @@ const express = require('express');
 const app = express();
 const port = 3001;
 
+app.use(express.json());
+
 // db init
 const mysql = require('mysql');
 const connection = mysql.createConnection({
@@ -57,9 +59,21 @@ app.get(api_header + '/topics/:topicId', (req, res) => {
 });
 
 app.post(api_header + '/topics', (req, res) => {
-    var ret = not_implemented_error;
-    ret.text = "POST REQUEST";
-    res.status(501).json(ret);
+    var clean = cleanUpInput(req.body, ["name", "description"]);
+
+    connection.query('INSERT INTO `klausimelis`.`topics` SET ? RETURNING *;',
+        [clean],
+        (err, rows, fields) => {
+            if (err) throw err;
+
+            if (rows.length < 1) {
+                res.status(404).json(not_found_error);
+                return;
+            }
+
+            res.location(api_header + "/topics/" + rows.insertId); 
+            res.status(201).json(rows[0]);
+        });
 });
 
 app.patch(api_header + '/topics/:topicId', (req, res) => {
@@ -266,4 +280,12 @@ app.use(catcher);
 function catcher(err, req, res, next) {
     console.error(err.stack);
     res.status(500).json({ code: 500, err: "SERVER_ERROR", message: "Internal Server Error" });
+}
+
+function cleanUpInput(object, valid_keys) {
+    var ret = {};
+
+    valid_keys.forEach(key => {ret[key] = object[key];});
+
+    return ret;
 }
