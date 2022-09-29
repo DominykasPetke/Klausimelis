@@ -36,7 +36,7 @@ const not_found_error = { code: 404, err: "NOT_FOUND", message: "Page not found"
 
 // topics
 app.get(api_header + '/topics', (req, res) => {
-    connection.query('SELECT * FROM `klausimelis`.`topics`;', (err, rows, fields) => {
+    connection.query('SELECT * FROM `topics`;', (err, rows, fields) => {
         if (err) throw err;
 
         res.status(200).json(rows);
@@ -44,7 +44,7 @@ app.get(api_header + '/topics', (req, res) => {
 });
 
 app.get(api_header + '/topics/:topicId', (req, res) => {
-    connection.query('SELECT * FROM `klausimelis`.`topics` WHERE `id` = ?;',
+    connection.query('SELECT * FROM `topics` WHERE `id` = ?;',
         [req.params.topicId],
         (err, rows, fields) => {
             if (err) throw err;
@@ -61,7 +61,7 @@ app.get(api_header + '/topics/:topicId', (req, res) => {
 app.post(api_header + '/topics', (req, res) => {
     var clean = cleanUpInput(req.body, ["name", "description"]);
 
-    connection.query('INSERT INTO `klausimelis`.`topics` SET ? RETURNING *;',
+    connection.query('INSERT INTO `topics` SET ? RETURNING *;',
         [clean],
         (err, rows, fields) => {
             if (err) throw err;
@@ -92,7 +92,7 @@ app.delete(api_header + '/topics/:topicId', (req, res) => {
 
 // themes
 app.get(api_header + '/topics/:topicId/themes', (req, res) => {
-    connection.query('SELECT 1 FROM `klausimelis`.`topics` WHERE `id` = ?;',
+    connection.query('SELECT 1 FROM `topics` WHERE `id` = ?;',
         [req.params.topicId],
         (err, rows, fields) => {
             if (rows.length < 1) {
@@ -100,7 +100,7 @@ app.get(api_header + '/topics/:topicId/themes', (req, res) => {
                 return;
             }
 
-            connection.query('SELECT `themes`.`id`, `themes`.`name`, `themes`.`description` FROM `klausimelis`.`themes` WHERE `FK_topicId` = ?;',
+            connection.query('SELECT `themes`.`id`, `themes`.`name`, `themes`.`description` FROM `themes` WHERE `FK_topicId` = ?;',
                 [req.params.topicId],
                 (err, rows, fields) => {
                     if (err) throw err;
@@ -111,7 +111,7 @@ app.get(api_header + '/topics/:topicId/themes', (req, res) => {
 });
 
 app.get(api_header + '/topics/:topicId/themes/:themeId', (req, res) => {
-    connection.query('SELECT `themes`.`id`, `themes`.`name`, `themes`.`description` FROM `klausimelis`.`themes` WHERE `FK_topicId` = ? AND `id` = ?;',
+    connection.query('SELECT `themes`.`id`, `themes`.`name`, `themes`.`description` FROM `themes` WHERE `FK_topicId` = ? AND `id` = ?;',
         [req.params.topicId, req.params.themeId],
         (err, rows, fields) => {
             if (err) throw err;
@@ -150,7 +150,7 @@ app.delete(api_header + '/topics/:topicId/themes/:themeId', (req, res) => {
 
 // questions
 app.get(api_header + '/topics/:topicId/themes/:themeId/questions', (req, res) => {
-    connection.query('SELECT 1 FROM `klausimelis`.`themes` WHERE `FK_topicId` = ? AND `id` = ?;',
+    connection.query('SELECT 1 FROM `themes` WHERE `FK_topicId` = ? AND `id` = ?;',
         [req.params.topicId, req.params.themeId],
         (err, rows, fields) => {
             if (rows.length < 1) {
@@ -158,7 +158,7 @@ app.get(api_header + '/topics/:topicId/themes/:themeId/questions', (req, res) =>
                 return;
             }
 
-            connection.query('SELECT `questions`.`id`, `questions`.`question`, `questions`.`answers` FROM `klausimelis`.`questions` WHERE `FK_themeId` = ?;',
+            connection.query('SELECT `questions`.`id`, `questions`.`question`, `questions`.`answers` FROM `questions` WHERE `FK_themeId` = ?;',
                 [req.params.themeId],
                 (err, rows, fields) => {
                     if (err) throw err;
@@ -176,7 +176,7 @@ app.get(api_header + '/topics/:topicId/themes/:themeId/questions', (req, res) =>
 
 app.get(api_header + '/topics/:topicId/themes/:themeId/questions/:questionId', (req, res) => {
     // potentially include answers here?
-    connection.query('SELECT 1 FROM `klausimelis`.`themes` WHERE `FK_topicId` = ? AND `id` = ?;',
+    connection.query('SELECT 1 FROM `themes` WHERE `FK_topicId` = ? AND `id` = ?;',
         [req.params.topicId, req.params.themeId],
         (err, rows, fields) => {
             if (rows.length < 1) {
@@ -184,7 +184,7 @@ app.get(api_header + '/topics/:topicId/themes/:themeId/questions/:questionId', (
                 return;
             }
 
-            connection.query('SELECT `questions`.`id`, `questions`.`question`, `questions`.`answers` FROM `klausimelis`.`questions` WHERE `FK_themeId` = ? AND `id` = ?',
+            connection.query('SELECT `questions`.`id`, `questions`.`question`, `questions`.`answers` FROM `questions` WHERE `FK_themeId` = ? AND `id` = ?',
                 [req.params.themeId, req.params.questionId],
                 (err, rows, fields) => {
                     if (err) throw err;
@@ -233,7 +233,7 @@ app.delete(api_header + '/topics/:topicId/themes/:themeId/questions/:questionId'
 
 // hierarchinis
 app.get(api_header + '/topics/:topicId/questions', (req, res) => {
-    connection.query('SELECT 1 FROM `klausimelis`.`topics` WHERE `id` = ?;',
+    connection.query('SELECT 1 FROM `topics` WHERE `id` = ?;',
         [req.params.topicId],
         (err, rows, fields) => {
             if (rows.length < 1) {
@@ -241,7 +241,7 @@ app.get(api_header + '/topics/:topicId/questions', (req, res) => {
                 return;
             }
 
-            connection.query('SELECT `questions`.`id`, `questions`.`FK_themeId` as themeId, `questions`.`question`, `questions`.`answers`, `themes`.`name`, `themes`.`description` FROM `klausimelis`.`questions` LEFT JOIN `klausimelis`.`themes` ON `questions`.`FK_themeId` = `themes`.`id` WHERE `themes`.`FK_topicId` = ?;',
+            connection.query('SELECT `questions`.`id`, `questions`.`FK_themeId` as themeId, `questions`.`question`, `questions`.`answers`, `themes`.`name`, `themes`.`description` FROM `questions` LEFT JOIN `themes` ON `questions`.`FK_themeId` = `themes`.`id` WHERE `themes`.`FK_topicId` = ?;',
                 [req.params.topicId],
                 (err, rows, fields) => {
                     if (err) throw err;
