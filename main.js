@@ -67,6 +67,11 @@ app.get(api_header + '/topics/:topicId', (req, res) => {
 app.post(api_header + '/topics', (req, res) => {
     var clean = cleanUpInput(req.body, ["name", "description"]);
 
+    if (!allRequiredKeysExist(clean, ["name"])) {
+        res.status(400).json({ code: 400, err: "BAD_REQUEST", message: "Not enough paramaters supplied" });
+        return;
+    }
+
     connection.query('INSERT INTO `topics` SET ? RETURNING *;',
         [clean],
         (err, rows, fields) => {
@@ -339,4 +344,14 @@ function cleanUpInput(object, valid_keys) {
     valid_keys.forEach(key => { if (object[key] != null) ret[key] = object[key]; });
 
     return ret;
+}
+
+function allRequiredKeysExist(object, required_keys) {
+    for (var key in required_keys) {
+        if (object[key] == null) {
+            return false;
+        }
+    }
+
+    return true;
 }
