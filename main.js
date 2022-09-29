@@ -38,7 +38,10 @@ const not_found_error = { code: 404, err: "NOT_FOUND", message: "Page not found"
 // topics
 app.get(api_header + '/topics', (req, res) => {
     connection.query('SELECT * FROM `topics`;', (err, rows, fields) => {
-        if (err) throw err;
+        if (err) {
+            catcher(err, req, res, null);
+            return;
+        }
 
         res.status(200).json(rows);
     });
@@ -48,7 +51,10 @@ app.get(api_header + '/topics/:topicId', (req, res) => {
     connection.query('SELECT * FROM `topics` WHERE `id` = ?;',
         [req.params.topicId],
         (err, rows, fields) => {
-            if (err) throw err;
+            if (err) {
+                catcher(err, req, res, null);
+                return;
+            }
 
             if (rows.length < 1) {
                 res.status(404).json(not_found_error);
@@ -98,6 +104,11 @@ app.get(api_header + '/topics/:topicId/themes', (req, res) => {
     connection.query('SELECT 1 FROM `topics` WHERE `id` = ?;',
         [req.params.topicId],
         (err, rows, fields) => {
+            if (err) {
+                catcher(err, req, res, null);
+                return;
+            }
+
             if (rows.length < 1) {
                 res.status(404).json(not_found_error);
                 return;
@@ -106,7 +117,10 @@ app.get(api_header + '/topics/:topicId/themes', (req, res) => {
             connection.query('SELECT `themes`.`id`, `themes`.`name`, `themes`.`description` FROM `themes` WHERE `FK_topicId` = ?;',
                 [req.params.topicId],
                 (err, rows, fields) => {
-                    if (err) throw err;
+                    if (err) {
+                        catcher(err, req, res, null);
+                        return;
+                    }
 
                     res.status(200).json(rows);
                 });
@@ -117,7 +131,10 @@ app.get(api_header + '/topics/:topicId/themes/:themeId', (req, res) => {
     connection.query('SELECT `themes`.`id`, `themes`.`name`, `themes`.`description` FROM `themes` WHERE `FK_topicId` = ? AND `id` = ?;',
         [req.params.topicId, req.params.themeId],
         (err, rows, fields) => {
-            if (err) throw err;
+            if (err) {
+                catcher(err, req, res, null);
+                return;
+            }
 
             if (rows.length < 1) {
                 res.status(404).json(not_found_error);
@@ -156,6 +173,11 @@ app.get(api_header + '/topics/:topicId/themes/:themeId/questions', (req, res) =>
     connection.query('SELECT 1 FROM `themes` WHERE `FK_topicId` = ? AND `id` = ?;',
         [req.params.topicId, req.params.themeId],
         (err, rows, fields) => {
+            if (err) {
+                catcher(err, req, res, null);
+                return;
+            }
+
             if (rows.length < 1) {
                 res.status(404).json(not_found_error);
                 return;
@@ -164,7 +186,10 @@ app.get(api_header + '/topics/:topicId/themes/:themeId/questions', (req, res) =>
             connection.query('SELECT `questions`.`id`, `questions`.`question`, `questions`.`answers` FROM `questions` WHERE `FK_themeId` = ?;',
                 [req.params.themeId],
                 (err, rows, fields) => {
-                    if (err) throw err;
+                    if (err) {
+                        catcher(err, req, res, null);
+                        return;
+                    }
 
                     // potentially with no answers here?
                     rows.forEach(element => {
@@ -182,6 +207,11 @@ app.get(api_header + '/topics/:topicId/themes/:themeId/questions/:questionId', (
     connection.query('SELECT 1 FROM `themes` WHERE `FK_topicId` = ? AND `id` = ?;',
         [req.params.topicId, req.params.themeId],
         (err, rows, fields) => {
+            if (err) {
+                catcher(err, req, res, null);
+                return;
+            }
+
             if (rows.length < 1) {
                 res.status(404).json(not_found_error);
                 return;
@@ -190,7 +220,10 @@ app.get(api_header + '/topics/:topicId/themes/:themeId/questions/:questionId', (
             connection.query('SELECT `questions`.`id`, `questions`.`question`, `questions`.`answers` FROM `questions` WHERE `FK_themeId` = ? AND `id` = ?',
                 [req.params.themeId, req.params.questionId],
                 (err, rows, fields) => {
-                    if (err) throw err;
+                    if (err) {
+                        catcher(err, req, res, null);
+                        return;
+                    }
 
                     if (rows.length < 1) {
                         res.status(404).json(not_found_error);
@@ -239,6 +272,11 @@ app.get(api_header + '/topics/:topicId/questions', (req, res) => {
     connection.query('SELECT 1 FROM `topics` WHERE `id` = ?;',
         [req.params.topicId],
         (err, rows, fields) => {
+            if (err) {
+                catcher(err, req, res, null);
+                return;
+            }
+
             if (rows.length < 1) {
                 res.status(404).json(not_found_error);
                 return;
@@ -247,7 +285,10 @@ app.get(api_header + '/topics/:topicId/questions', (req, res) => {
             connection.query('SELECT `questions`.`id`, `questions`.`FK_themeId` as themeId, `questions`.`question`, `questions`.`answers`, `themes`.`name`, `themes`.`description` FROM `questions` LEFT JOIN `themes` ON `questions`.`FK_themeId` = `themes`.`id` WHERE `themes`.`FK_topicId` = ?;',
                 [req.params.topicId],
                 (err, rows, fields) => {
-                    if (err) throw err;
+                    if (err) {
+                        catcher(err, req, res, null);
+                        return;
+                    }
 
                     // potentially with no answers here?
                     rows.forEach(element => {
