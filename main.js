@@ -142,7 +142,7 @@ app.delete(api_header + '/topics/:topicId', (req, res) => {
                 return;
             }
 
-            res.status(200).send();
+            res.status(200).sendJSON(rows[0]);
         });
 });
 
@@ -277,7 +277,7 @@ app.delete(api_header + '/topics/:topicId/themes/:themeId', (req, res) => {
                 return;
             }
 
-            res.status(200).send();
+            res.status(200).sendJSON(rows[0]);
         });
 });
 
