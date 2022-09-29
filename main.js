@@ -90,13 +90,6 @@ app.post(api_header + '/topics', (req, res) => {
 });
 
 app.patch(api_header + '/topics/:topicId', (req, res) => {
-    var clean = cleanUpInput(req.body, ["name", "description"]);
-
-    if (Object.keys(clean).length < 1) {
-        res.status(400).json({ code: 400, err: "BAD_REQUEST", message: "Not enough paramaters supplied" });
-        return;
-    }
-
     connection.query('SELECT 1 FROM `topics` WHERE `id` = ?;',
         [req.params.topicId],
         (err, rows, fields) => {
@@ -107,6 +100,13 @@ app.patch(api_header + '/topics/:topicId', (req, res) => {
 
             if (rows.length < 1) {
                 res.status(404).json(not_found_error);
+                return;
+            }
+
+            var clean = cleanUpInput(req.body, ["name", "description"]);
+
+            if (Object.keys(clean).length < 1) {
+                res.status(400).json({ code: 400, err: "BAD_REQUEST", message: "Not enough paramaters supplied" });
                 return;
             }
 
@@ -225,11 +225,42 @@ app.post(api_header + '/topics/:topicId/themes', (req, res) => {
 });
 
 app.patch(api_header + '/topics/:topicId/themes/:themeId', (req, res) => {
-    var ret = not_implemented_error;
-    ret.topicId = req.params.topicId;
-    ret.themeId = req.params.themeId;
-    ret.text = "PATCH";
-    res.status(501).json(ret);
+    connection.query('SELECT 1 FROM `themes` WHERE `FK_topicId` = ? AND `id` = ?;',
+        [req.params.topicId, req.params.themeId],
+        (err, rows, fields) => {
+            if (err) {
+                error500(err, req, res, null);
+                return;
+            }
+
+            if (rows.length < 1) {
+                res.status(404).json(not_found_error);
+                return;
+            }
+
+            var clean = cleanUpInput(req.body, ["name", "description"]);
+
+            if (Object.keys(clean).length < 1) {
+                res.status(400).json({ code: 400, err: "BAD_REQUEST", message: "Not enough paramaters supplied" });
+                return;
+            }
+
+            connection.query('UPDATE `themes` SET ? WHERE `FK_topicId` = ? AND `id` = ?;',
+                [clean, req.params.topicId, req.params.themeId],
+                (err, rows, fields) => {
+                    if (err) {
+                        error500(err, req, res, null);
+                        return;
+                    }
+
+                    if (rows.length < 1) {
+                        error500(err, req, res, null);
+                        return;
+                    }
+
+                    res.sendStatus(204);
+                });
+        });
 });
 
 app.delete(api_header + '/topics/:topicId/themes/:themeId', (req, res) => {
