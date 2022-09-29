@@ -471,6 +471,10 @@ app.delete(api_header + '/topics/:topicId/themes/:themeId/questions/:questionId'
                         return;
                     }
 
+                    rows.forEach(element => {
+                        element.answers = JSON.parse(element.answers);
+                    });
+
                     res.status(200).json(rows[0]);
                 });
         });
