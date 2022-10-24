@@ -343,6 +343,11 @@ app.get(api_header + '/topics/:topicId/themes/:themeId/questions/:questionId', (
                         return;
                     }
 
+                    if (rows[0].id != req.params.questionId) {
+                        res.status(404).json(not_found_error);
+                        return;
+                    }
+
                     // potentially with no answers here?
                     rows.forEach(element => {
                         element.answers = JSON.parse(element.answers);
@@ -522,6 +527,33 @@ app.get(api_header + '/topics/:topicId/questions', (req, res) => {
                 });
         });
 });
+
+
+// OAuth
+app.get(api_header + '/authorise', (req, res) => {
+    var ret = not_implemented_error;
+    ret.text = "Auth";
+    res.status(501).json(ret);
+});
+
+app.get(api_header + '/token', (req, res) => {
+    var ret = not_implemented_error;
+    ret.text = "Token";
+    res.status(501).json(ret);
+});
+
+app.get(api_header + '/login', (req, res) => {
+    var ret = not_implemented_error;
+    ret.text = "Login";
+    res.status(501).json(ret);
+});
+
+app.get(api_header + '/register', (req, res) => {
+    var ret = not_implemented_error;
+    ret.text = "Register";
+    res.status(501).json(ret);
+});
+
 
 // miscellaneous
 app.listen(port, () => {
