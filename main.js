@@ -60,6 +60,11 @@ app.get(api_header + '/topics/:topicId', (req, res) => {
                 return;
             }
 
+            if (rows[0].id != req.params.topicId) {
+                res.status(404).json(not_found_error);
+                return;
+            }
+
             res.status(200).json(rows[0]);
         });
 });
@@ -90,7 +95,7 @@ app.post(api_header + '/topics', (req, res) => {
 });
 
 app.patch(api_header + '/topics/:topicId', (req, res) => {
-    connection.query('SELECT 1 FROM `topics` WHERE `id` = ?;',
+    connection.query('SELECT `id` FROM `topics` WHERE `id` = ?;',
         [req.params.topicId],
         (err, rows, fields) => {
             if (err) {
@@ -99,6 +104,11 @@ app.patch(api_header + '/topics/:topicId', (req, res) => {
             }
 
             if (rows.length < 1) {
+                res.status(404).json(not_found_error);
+                return;
+            }
+
+            if (rows[0].id != req.params.topicId) {
                 res.status(404).json(not_found_error);
                 return;
             }
@@ -129,7 +139,45 @@ app.patch(api_header + '/topics/:topicId', (req, res) => {
 });
 
 app.delete(api_header + '/topics/:topicId', (req, res) => {
-    connection.query('DELETE FROM `topics` WHERE `id` = ? RETURNING *;',
+    connection.query('SELECT `id` FROM `topics` WHERE `id` = ?;',
+        [req.params.topicId, req.params.themeId],
+        (err, rows, fields) => {
+            if (err) {
+                error500(err, req, res, null);
+                return;
+            }
+
+            if (rows.length < 1) {
+                res.status(404).json(not_found_error);
+                return;
+            }
+
+            if (rows[0].id != req.params.topicId) {
+                res.status(404).json(not_found_error);
+                return;
+            }
+
+            connection.query('DELETE FROM `topics` WHERE `id` = ? RETURNING *;',
+                [req.params.topicId],
+                (err, rows, fields) => {
+                    if (err) {
+                        error500(err, req, res, null);
+                        return;
+                    }
+
+                    if (rows.length < 1) {
+                        res.status(404).json(not_found_error);
+                        return;
+                    }
+
+                    res.status(200).json(rows[0]);
+                });
+        });
+});
+
+// themes
+app.get(api_header + '/topics/:topicId/themes', (req, res) => {
+    connection.query('SELECT `id` FROM `topics` WHERE `id` = ?;',
         [req.params.topicId],
         (err, rows, fields) => {
             if (err) {
@@ -142,21 +190,7 @@ app.delete(api_header + '/topics/:topicId', (req, res) => {
                 return;
             }
 
-            res.status(200).json(rows[0]);
-        });
-});
-
-// themes
-app.get(api_header + '/topics/:topicId/themes', (req, res) => {
-    connection.query('SELECT 1 FROM `topics` WHERE `id` = ?;',
-        [req.params.topicId],
-        (err, rows, fields) => {
-            if (err) {
-                error500(err, req, res, null);
-                return;
-            }
-
-            if (rows.length < 1) {
+            if (rows[0].id != req.params.topicId) {
                 res.status(404).json(not_found_error);
                 return;
             }
@@ -175,7 +209,7 @@ app.get(api_header + '/topics/:topicId/themes', (req, res) => {
 });
 
 app.get(api_header + '/topics/:topicId/themes/:themeId', (req, res) => {
-    connection.query('SELECT `themes`.`id`, `themes`.`name`, `themes`.`description` FROM `themes` WHERE `FK_topicId` = ? AND `id` = ?;',
+    connection.query('SELECT `themes`.`id`, `themes`.`name`, `themes`.`description`, `themes`.`FK_topicId` FROM `themes` WHERE `FK_topicId` = ? AND `id` = ?;',
         [req.params.topicId, req.params.themeId],
         (err, rows, fields) => {
             if (err) {
@@ -188,44 +222,70 @@ app.get(api_header + '/topics/:topicId/themes/:themeId', (req, res) => {
                 return;
             }
 
+            if (rows[0].id != req.params.themeId || rows[0].FK_topicId != req.params.topicId) {
+                res.status(404).json(not_found_error);
+                return;
+            }
+
+            delete rows[0].FK_topicId;
+
             res.status(200).json(rows[0]);
         });
 });
 
 app.post(api_header + '/topics/:topicId/themes', (req, res) => {
-    var clean = cleanUpInput(req.body, ["name", "description"]);
-
-    if (!allRequiredKeysExist(clean, ["name"])) {
-        res.status(400).json({ code: 400, err: "BAD_REQUEST", message: "Not enough paramaters supplied" });
-        return;
-    }
-
-    clean.FK_topicId = req.params.topicId;
-
-    connection.query('INSERT INTO `themes` SET ? RETURNING `themes`.`id`, `themes`.`name`, `themes`.`description`;',
-        [clean],
+    connection.query('SELECT `id` FROM `topics` WHERE `id` = ?;',
+        [req.params.topicId],
         (err, rows, fields) => {
             if (err) {
-                if (err.code == 'ER_NO_REFERENCED_ROW_2') {
-                    res.status(404).json(not_found_error);
-                    return;
-                }
-
                 error500(err, req, res, null);
                 return;
             }
 
             if (rows.length < 1) {
-                error500(err, req, res, null);
+                res.status(404).json(not_found_error);
                 return;
             }
 
-            res.location(api_header + "/topics/" + req.params.topicId + "/themes/" + rows[0].id).status(201).json(rows[0]);
+            if (rows[0].id != req.params.topicId) {
+                res.status(404).json(not_found_error);
+                return;
+            }
+
+            var clean = cleanUpInput(req.body, ["name", "description"]);
+
+            if (!allRequiredKeysExist(clean, ["name"])) {
+                res.status(400).json({ code: 400, err: "BAD_REQUEST", message: "Not enough paramaters supplied" });
+                return;
+            }
+
+            clean.FK_topicId = req.params.topicId;
+
+            connection.query('INSERT INTO `themes` SET ? RETURNING `themes`.`id`, `themes`.`name`, `themes`.`description`;',
+                [clean],
+                (err, rows, fields) => {
+                    if (err) {
+                        if (err.code == 'ER_NO_REFERENCED_ROW_2') {
+                            res.status(404).json(not_found_error);
+                            return;
+                        }
+
+                        error500(err, req, res, null);
+                        return;
+                    }
+
+                    if (rows.length < 1) {
+                        error500(err, req, res, null);
+                        return;
+                    }
+
+                    res.location(api_header + "/topics/" + req.params.topicId + "/themes/" + rows[0].id).status(201).json(rows[0]);
+                });
         });
 });
 
 app.patch(api_header + '/topics/:topicId/themes/:themeId', (req, res) => {
-    connection.query('SELECT 1 FROM `themes` WHERE `FK_topicId` = ? AND `id` = ?;',
+    connection.query('SELECT `FK_topicId`, `id` FROM `themes` WHERE `FK_topicId` = ? AND `id` = ?;',
         [req.params.topicId, req.params.themeId],
         (err, rows, fields) => {
             if (err) {
@@ -234,6 +294,11 @@ app.patch(api_header + '/topics/:topicId/themes/:themeId', (req, res) => {
             }
 
             if (rows.length < 1) {
+                res.status(404).json(not_found_error);
+                return;
+            }
+
+            if (rows[0].id != req.params.themeId || rows[0].FK_topicId != req.params.topicId) {
                 res.status(404).json(not_found_error);
                 return;
             }
@@ -264,7 +329,7 @@ app.patch(api_header + '/topics/:topicId/themes/:themeId', (req, res) => {
 });
 
 app.delete(api_header + '/topics/:topicId/themes/:themeId', (req, res) => {
-    connection.query('DELETE FROM `themes` WHERE `FK_topicId` = ? AND `id` = ? RETURNING *;',
+    connection.query('SELECT `FK_topicId`, `id` FROM `themes` WHERE `FK_topicId` = ? AND `id` = ?;',
         [req.params.topicId, req.params.themeId],
         (err, rows, fields) => {
             if (err) {
@@ -277,13 +342,32 @@ app.delete(api_header + '/topics/:topicId/themes/:themeId', (req, res) => {
                 return;
             }
 
-            res.status(200).json(rows[0]);
+            if (rows[0].id != req.params.themeId || rows[0].FK_topicId != req.params.topicId) {
+                res.status(404).json(not_found_error);
+                return;
+            }
+
+            connection.query('DELETE FROM `themes` WHERE `FK_topicId` = ? AND `id` = ? RETURNING *;',
+                [req.params.topicId, req.params.themeId],
+                (err, rows, fields) => {
+                    if (err) {
+                        error500(err, req, res, null);
+                        return;
+                    }
+
+                    if (rows.length < 1) {
+                        res.status(404).json(not_found_error);
+                        return;
+                    }
+
+                    res.status(200).json(rows[0]);
+                });
         });
 });
 
 // questions
 app.get(api_header + '/topics/:topicId/themes/:themeId/questions', (req, res) => {
-    connection.query('SELECT 1 FROM `themes` WHERE `FK_topicId` = ? AND `id` = ?;',
+    connection.query('SELECT `FK_topicId`, `id` FROM `themes` WHERE `FK_topicId` = ? AND `id` = ?;',
         [req.params.topicId, req.params.themeId],
         (err, rows, fields) => {
             if (err) {
@@ -296,7 +380,12 @@ app.get(api_header + '/topics/:topicId/themes/:themeId/questions', (req, res) =>
                 return;
             }
 
-            connection.query('SELECT `questions`.`id`, `questions`.`question`, `questions`.`answers` FROM `questions` WHERE `FK_themeId` = ?;',
+            if (rows[0].id != req.params.themeId || rows[0].FK_topicId != req.params.topicId) {
+                res.status(404).json(not_found_error);
+                return;
+            }
+
+            connection.query('SELECT `questions`.`id`, `questions`.`question`, `questions`.`FK_themeId`, `questions`.`answers` FROM `questions` WHERE `FK_themeId` = ?;',
                 [req.params.themeId],
                 (err, rows, fields) => {
                     if (err) {
@@ -304,9 +393,15 @@ app.get(api_header + '/topics/:topicId/themes/:themeId/questions', (req, res) =>
                         return;
                     }
 
+                    if (rows[0].FK_themeId != req.params.themeId) {
+                        res.status(404).json(not_found_error);
+                        return;
+                    }
+
                     // potentially with no answers here?
                     rows.forEach(element => {
                         element.answers = JSON.parse(element.answers);
+                        delete element.FK_themeId;
                         // delete element.answers;
                     });
 
@@ -317,7 +412,7 @@ app.get(api_header + '/topics/:topicId/themes/:themeId/questions', (req, res) =>
 
 app.get(api_header + '/topics/:topicId/themes/:themeId/questions/:questionId', (req, res) => {
     // potentially include answers here?
-    connection.query('SELECT 1 FROM `themes` WHERE `FK_topicId` = ? AND `id` = ?;',
+    connection.query('SELECT `FK_topicId`, `id` FROM `themes` WHERE `FK_topicId` = ? AND `id` = ?;',
         [req.params.topicId, req.params.themeId],
         (err, rows, fields) => {
             if (err) {
@@ -326,6 +421,11 @@ app.get(api_header + '/topics/:topicId/themes/:themeId/questions/:questionId', (
             }
 
             if (rows.length < 1) {
+                res.status(404).json(not_found_error);
+                return;
+            }
+
+            if (rows[0].id != req.params.themeId || rows[0].FK_topicId != req.params.topicId) {
                 res.status(404).json(not_found_error);
                 return;
             }
@@ -343,7 +443,7 @@ app.get(api_header + '/topics/:topicId/themes/:themeId/questions/:questionId', (
                         return;
                     }
 
-                    if (rows[0].id != req.params.questionId) {
+                    if (rows[0].id != req.params.questionId || rows[0].FK_themeId != req.params.themeId) {
                         res.status(404).json(not_found_error);
                         return;
                     }
@@ -360,7 +460,7 @@ app.get(api_header + '/topics/:topicId/themes/:themeId/questions/:questionId', (
 });
 
 app.post(api_header + '/topics/:topicId/themes/:themeId/questions', (req, res) => {
-    connection.query('SELECT 1 FROM `themes` WHERE `FK_topicId` = ? AND `id` = ?;',
+    connection.query('SELECT `FK_topicId`, `id` FROM `themes` WHERE `FK_topicId` = ? AND `id` = ?;',
         [req.params.topicId, req.params.themeId],
         (err, rows, fields) => {
             if (err) {
@@ -369,6 +469,11 @@ app.post(api_header + '/topics/:topicId/themes/:themeId/questions', (req, res) =
             }
 
             if (rows.length < 1) {
+                res.status(404).json(not_found_error);
+                return;
+            }
+
+            if (rows[0].id != req.params.themeId || rows[0].FK_topicId != req.params.topicId) {
                 res.status(404).json(not_found_error);
                 return;
             }
@@ -407,7 +512,7 @@ app.post(api_header + '/topics/:topicId/themes/:themeId/questions', (req, res) =
 });
 
 app.put(api_header + '/topics/:topicId/themes/:themeId/questions/:questionId', (req, res) => {
-    connection.query('SELECT 1 FROM `themes` WHERE `FK_topicId` = ? AND `id` = ?;',
+    connection.query('SELECT `FK_topicId`, `id` FROM `themes` WHERE `FK_topicId` = ? AND `id` = ?;',
         [req.params.topicId, req.params.themeId],
         (err, rows, fields) => {
             if (err) {
@@ -420,50 +525,12 @@ app.put(api_header + '/topics/:topicId/themes/:themeId/questions/:questionId', (
                 return;
             }
 
-            var clean = questionCleanup(req, res);
-
-            if (!clean) {
-                return;
-            }
-
-            connection.query('UPDATE `questions` SET ? WHERE `FK_themeId` = ? AND `id` = ?',
-                [clean, req.params.themeId, req.params.questionId],
-                (err, rows, fields) => {
-                    if (err) {
-                        if (err.code == 'ER_NO_REFERENCED_ROW_2') { // technically should never trigger
-                            res.status(404).json(not_found_error);
-                            return;
-                        }
-
-                        error500(err, req, res, null);
-                        return;
-                    }
-
-                    if (rows.length < 1) {
-                        error500(err, req, res, null);
-                        return;
-                    }
-
-                    res.sendStatus(204);
-                });
-        });
-});
-
-app.delete(api_header + '/topics/:topicId/themes/:themeId/questions/:questionId', (req, res) => {
-    connection.query('SELECT 1 FROM `themes` WHERE `FK_topicId` = ? AND `id` = ?;',
-        [req.params.topicId, req.params.themeId],
-        (err, rows, fields) => {
-            if (err) {
-                error500(err, req, res, null);
-                return;
-            }
-
-            if (rows.length < 1) {
+            if (rows[0].id != req.params.themeId || rows[0].FK_topicId != req.params.topicId) {
                 res.status(404).json(not_found_error);
                 return;
             }
 
-            connection.query('DELETE FROM `questions` WHERE `FK_themeId` = ? AND `id` = ? RETURNING *;',
+            connection.query('SELECT `FK_themeId`, `id` FROM `questions` WHERE `FK_themeId` = ? AND `id` = ?;',
                 [req.params.themeId, req.params.questionId],
                 (err, rows, fields) => {
                     if (err) {
@@ -476,18 +543,110 @@ app.delete(api_header + '/topics/:topicId/themes/:themeId/questions/:questionId'
                         return;
                     }
 
-                    rows.forEach(element => {
-                        element.answers = JSON.parse(element.answers);
-                    });
+                    if (rows[0].id != req.params.questionId || rows[0].FK_themeId != req.params.themeId) {
+                        res.status(404).json(not_found_error);
+                        return;
+                    }
 
-                    res.status(200).json(rows[0]);
+                    var clean = questionCleanup(req, res);
+
+                    if (!clean) {
+                        return;
+                    }
+
+                    connection.query('UPDATE `questions` SET ? WHERE `FK_themeId` = ? AND `id` = ?',
+                        [clean, req.params.themeId, req.params.questionId],
+                        (err, rows, fields) => {
+                            if (err) {
+                                if (err.code == 'ER_NO_REFERENCED_ROW_2') { // technically should never trigger
+                                    res.status(404).json(not_found_error);
+                                    return;
+                                }
+
+                                error500(err, req, res, null);
+                                return;
+                            }
+
+                            if (rows.length < 1) {
+                                error500(err, req, res, null);
+                                return;
+                            }
+
+                            res.sendStatus(204);
+                        });
+                });
+        });
+});
+
+app.delete(api_header + '/topics/:topicId/themes/:themeId/questions/:questionId', (req, res) => {
+    connection.query('SELECT `FK_topicId`, `id` FROM `themes` WHERE `FK_topicId` = ? AND `id` = ?;',
+        [req.params.topicId, req.params.themeId],
+        (err, rows, fields) => {
+            if (err) {
+                error500(err, req, res, null);
+                return;
+            }
+
+            if (rows.length < 1) {
+                res.status(404).json(not_found_error);
+                return;
+            }
+
+            if (rows[0].id != req.params.themeId || rows[0].FK_topicId != req.params.topicId) {
+                res.status(404).json(not_found_error);
+                return;
+            }
+
+            connection.query('SELECT `FK_themeId`, `id` FROM `questions` WHERE `FK_themeId` = ? AND `id` = ?;',
+                [req.params.themeId, req.params.questionId],
+                (err, rows, fields) => {
+                    if (err) {
+                        error500(err, req, res, null);
+                        return;
+                    }
+
+                    if (rows.length < 1) {
+                        res.status(404).json(not_found_error);
+                        return;
+                    }
+
+                    if (rows[0].id != req.params.questionId || rows[0].FK_themeId != req.params.themeId) {
+                        res.status(404).json(not_found_error);
+                        return;
+                    }
+
+                    var clean = questionCleanup(req, res);
+
+                    if (!clean) {
+                        return;
+                    }
+
+                    connection.query('DELETE FROM `questions` WHERE `FK_themeId` = ? AND `id` = ? RETURNING *;',
+                        [req.params.themeId, req.params.questionId],
+                        (err, rows, fields) => {
+                            if (err) {
+                                error500(err, req, res, null);
+                                return;
+                            }
+
+                            if (rows.length < 1) {
+                                res.status(404).json(not_found_error);
+                                return;
+                            }
+
+                            rows.forEach(element => {
+                                element.answers = JSON.parse(element.answers);
+                            });
+
+                            res.status(200).json(rows[0]);
+                        });
                 });
         });
 });
 
 // hierarchinis
 app.get(api_header + '/topics/:topicId/questions', (req, res) => {
-    connection.query('SELECT 1 FROM `topics` WHERE `id` = ?;',
+    connection.query('SELECT `id` FROM `topics` WHERE `id` = ?;',
         [req.params.topicId],
         (err, rows, fields) => {
             if (err) {
@@ -496,6 +655,11 @@ app.get(api_header + '/topics/:topicId/questions', (req, res) => {
             }
 
             if (rows.length < 1) {
+                res.status(404).json(not_found_error);
+                return;
+            }
+            
+            if (rows[0].id != req.params.topicId) {
                 res.status(404).json(not_found_error);
                 return;
             }
