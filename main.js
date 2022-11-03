@@ -10,13 +10,8 @@ const port = 3001;
 app.use(express.json());
 
 // db init
-const mysql = require('mysql');
-const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'dominykas',
-    password: 'password',
-    database: 'klausimelis'
-});
+const mysql = require('mysql2');
+var connection = mysql.createConnection(process.env.URLSTRING);
 
 connection.connect();
 
@@ -710,6 +705,9 @@ app.get(api_header + '/login', (req, res) => {
     var ret = not_implemented_error;
     ret.text = "Login";
     res.status(501).json(ret);
+    return;
+
+    
 });
 
 app.get(api_header + '/register', (req, res) => {
