@@ -5,7 +5,7 @@
 // express.js init
 const express = require('express');
 const app = express();
-const port = 3001;
+var port = process.env.PORT;
 
 app.use(express.json());
 
