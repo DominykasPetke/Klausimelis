@@ -9,6 +9,7 @@ var port = process.env.PORT;
 
 app.use(express.json());
 
+console.log(process.env.DATABASE_URL);
 // db init
 const mysql = require('mysql2');
 var connection = mysql.createConnection(process.env.URLSTRING);
