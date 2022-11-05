@@ -7,38 +7,19 @@ const api = require('./api');
 
 // express.js init
 const express = require('express');
+const session = require('express-session');
 const app = express();
-var port = process.env.PORT;
+var port = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+}));
 
 const api_header = "/api/v1";
 app.use(api_header, api);
-
-// OAuth
-app.get(api_header + '/authorise', (req, res) => {
-    var ret = misc.not_implemented_error;
-    ret.text = "Auth";
-    res.status(501).json(ret);
-});
-
-app.get(api_header + '/token', (req, res) => {
-    var ret = misc.not_implemented_error;
-    ret.text = "Token";
-    res.status(501).json(ret);
-});
-
-app.get(api_header + '/login', (req, res) => {
-    var ret = misc.not_implemented_error;
-    ret.text = "Login";
-    res.status(501).json(ret);
-});
-
-app.get(api_header + '/register', (req, res) => {
-    var ret = misc.not_implemented_error;
-    ret.text = "Register";
-    res.status(501).json(ret);
-});
 
 // miscellaneous
 app.listen(port, () => {
