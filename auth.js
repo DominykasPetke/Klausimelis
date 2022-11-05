@@ -60,10 +60,8 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, function verify(email
         });
 }));
 
-router.get('/token', (req, res) => {
-    var ret = misc.not_implemented_error;
-    ret.text = "Token";
-    res.status(501).json(ret);
+router.get('/user', login.ensureLoggedIn(), (req, res) => {
+    res.status(200).json(req.user);
 });
 
 router.post('/login',
