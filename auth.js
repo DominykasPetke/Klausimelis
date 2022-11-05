@@ -12,7 +12,16 @@ const crypto = require('crypto');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 
+const oauth2orize = require('oauth2orize');
+const server = oauth2orize.createServer(); 
+
 const email_validator = require("email-validator");
+
+passport.serializeUser((user, done) => done(null, user));
+passport.deserializeUser((user, done) => done(null, user));
+
+server.serializeClient((client, done) => done(null, client));
+server.deserializeClient((client, done) => done(null, client));
 
 passport.use(new LocalStrategy({ usernameField: 'email' }, function verify(email, password, cb) {
     if (!email_validator.validate(email)) {
@@ -48,10 +57,6 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, function verify(email
             });
         });
 }));
-
-passport.serializeUser((user, done) => done(null, user));
-
-passport.deserializeUser((user, done) => done(null, user));
 
 router.get('/token', (req, res) => {
     var ret = misc.not_implemented_error;
