@@ -10,6 +10,8 @@ const router = express.Router();
 
 const crypto = require('crypto');
 
+const email_validator = require("email-validator");
+
 // OAuth
 router.get('/token', (req, res) => {
     var ret = misc.not_implemented_error;
@@ -28,6 +30,11 @@ router.post('/register', (req, res) => {
 
     if (!misc.allRequiredKeysExist(clean, ["username", "password", "email"])) {
         res.status(400).json({ code: 400, err: "BAD_REQUEST", message: "Not enough paramaters supplied" });
+        return;
+    }
+
+    if (!email_validator.validate(clean.email)) {
+        res.status(400).json({ code: 400, err: "BAD_REQUEST", message: "Invalid email" });
         return;
     }
 
