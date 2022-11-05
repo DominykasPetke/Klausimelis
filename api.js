@@ -6,7 +6,7 @@ const misc = require('./misc');
 
 const express = require('express');
 const router = express.Router();
-var connection = require('./db');
+const connection = require('./db');
 
 // topics
 router.get('/topics', (req, res) => {
