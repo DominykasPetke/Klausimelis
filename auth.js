@@ -3,6 +3,7 @@
 'use strict';
 
 const misc = require('./misc');
+const connection = require('./db');
 
 const express = require('express');
 const router = express.Router();
@@ -31,3 +32,5 @@ router.get('/register', (req, res) => {
   ret.text = "Register";
   res.status(501).json(ret);
 });
+
+module.exports = router;

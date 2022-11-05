@@ -3,10 +3,10 @@
 'use strict';
 
 const misc = require('./misc');
+const connection = require('./db');
 
 const express = require('express');
 const router = express.Router();
-const connection = require('./db');
 
 // topics
 router.get('/topics', (req, res) => {
