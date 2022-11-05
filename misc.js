@@ -4,6 +4,7 @@
 
 module.exports.not_implemented_error = { code: 501, err: "NOT_IMPLEMENTED", message: "Not implemented (yet)" };
 module.exports.not_found_error = { code: 404, err: "NOT_FOUND", message: "Page not found" };
+module.exports.forbidden_error = { code: 403, err: "FORBIDDEN", message: "Access forbidden" };
 
 module.exports.error500 = function (err, req, res, next) {
     console.error(err);
