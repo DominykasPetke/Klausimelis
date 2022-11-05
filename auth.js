@@ -15,6 +15,8 @@ const LocalStrategy = require('passport-local');
 const oauth2orize = require('oauth2orize');
 const server = oauth2orize.createServer(); 
 
+const login = require('connect-ensure-login');
+
 const email_validator = require("email-validator");
 
 passport.serializeUser((user, done) => done(null, user));
