@@ -4,6 +4,7 @@
 
 const misc = require('./misc');
 const api = require('./api');
+const auth = require('./auth');
 
 // express.js init
 const express = require('express');
@@ -20,6 +21,7 @@ app.use(session({
 
 const api_header = "/api/v1";
 app.use(api_header, api);
+app.use(api_header, auth);
 
 // miscellaneous
 app.listen(port, () => {
