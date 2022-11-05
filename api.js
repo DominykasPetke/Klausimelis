@@ -44,7 +44,7 @@ router.get('/topics/:topicId', (req, res) => {
 });
 
 router.post('/topics', (req, res) => {
-    var clean = cleanUpInput(req.body, ["name", "description"]);
+    var clean = misc.cleanUpInput(req.body, ["name", "description"]);
 
     if (!misc.allRequiredKeysExist(clean, ["name"])) {
         res.status(400).json({ code: 400, err: "BAD_REQUEST", message: "Not enough paramaters supplied" });
@@ -96,7 +96,7 @@ router.patch('/topics/:topicId', (req, res) => {
                 return;
             }
 
-            var clean = cleanUpInput(req.body, ["name", "description"]);
+            var clean = misc.cleanUpInput(req.body, ["name", "description"]);
 
             if (Object.keys(clean).length < 1) {
                 res.status(400).json({ code: 400, err: "BAD_REQUEST", message: "Not enough paramaters supplied" });
@@ -230,7 +230,7 @@ router.post('/topics/:topicId/themes', (req, res) => {
                 return;
             }
 
-            var clean = cleanUpInput(req.body, ["name", "description"]);
+            var clean = misc.cleanUpInput(req.body, ["name", "description"]);
 
             if (!misc.allRequiredKeysExist(clean, ["name"])) {
                 res.status(400).json({ code: 400, err: "BAD_REQUEST", message: "Not enough paramaters supplied" });
@@ -290,7 +290,7 @@ router.patch('/topics/:topicId/themes/:themeId', (req, res) => {
                 return;
             }
 
-            var clean = cleanUpInput(req.body, ["name", "description"]);
+            var clean = misc.cleanUpInput(req.body, ["name", "description"]);
 
             if (Object.keys(clean).length < 1) {
                 res.status(400).json({ code: 400, err: "BAD_REQUEST", message: "Not enough paramaters supplied" });
@@ -668,16 +668,8 @@ router.get('/topics/:topicId/questions', (req, res) => {
         });
 });
 
-function cleanUpInput(object, valid_keys) {
-    var ret = {};
-
-    valid_keys.forEach(key => { if (object[key] != null) ret[key] = object[key]; });
-
-    return ret;
-}
-
 function questionCleanup(req, res) {
-    var clean = cleanUpInput(req.body, ["question", "answers"]);
+    var clean = misc.cleanUpInput(req.body, ["question", "answers"]);
 
     if (!misc.allRequiredKeysExist(clean, ["question", "answers"])) {
         res.status(400).json({ code: 400, err: "BAD_REQUEST", message: "Not enough paramaters supplied" });
@@ -694,7 +686,7 @@ function questionCleanup(req, res) {
     var is_correct_count = 0;
 
     clean.answers.forEach((ans, index, arr) => {
-        arr[index] = cleanUpInput(ans, ["answer", "is_correct"]);
+        arr[index] = misc.cleanUpInput(ans, ["answer", "is_correct"]);
 
         if (arr[index].is_correct === true) { is_correct_count++; }
 

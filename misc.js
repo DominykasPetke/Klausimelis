@@ -19,3 +19,11 @@ module.exports.allRequiredKeysExist = function (object, required_keys) {
 
     return true;
 };
+
+module.exports.cleanUpInput = function (object, valid_keys) {
+    var ret = {};
+
+    valid_keys.forEach(key => { if (object[key] != null) ret[key] = object[key]; });
+
+    return ret;
+};
