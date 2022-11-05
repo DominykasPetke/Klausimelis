@@ -14,7 +14,7 @@ const LocalStrategy = require('passport-local');
 
 const email_validator = require("email-validator");
 
-passport.use(new LocalStrategy( { usernameField: 'email' }, function verify(email, password, cb) {
+passport.use(new LocalStrategy({ usernameField: 'email' }, function verify(email, password, cb) {
     if (!email_validator.validate(email)) {
         return cb(null, false, { message: 'Incorrect email or password.' });
     }
@@ -131,6 +131,13 @@ router.post('/register', (req, res) => {
                     });
             });
         });
+});
+
+router.post('/logout', function (req, res, next) {
+    req.logout(function (err) {
+        if (err) { return next(err); }
+        res.status(200).json();
+    });
 });
 
 module.exports = router;
