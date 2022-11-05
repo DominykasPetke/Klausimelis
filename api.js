@@ -46,7 +46,7 @@ router.get('/topics/:topicId', (req, res) => {
 router.post('/topics', (req, res) => {
     var clean = cleanUpInput(req.body, ["name", "description"]);
 
-    if (!allRequiredKeysExist(clean, ["name"])) {
+    if (!misc.allRequiredKeysExist(clean, ["name"])) {
         res.status(400).json({ code: 400, err: "BAD_REQUEST", message: "Not enough paramaters supplied" });
         return;
     }
@@ -232,7 +232,7 @@ router.post('/topics/:topicId/themes', (req, res) => {
 
             var clean = cleanUpInput(req.body, ["name", "description"]);
 
-            if (!allRequiredKeysExist(clean, ["name"])) {
+            if (!misc.allRequiredKeysExist(clean, ["name"])) {
                 res.status(400).json({ code: 400, err: "BAD_REQUEST", message: "Not enough paramaters supplied" });
                 return;
             }
@@ -676,20 +676,10 @@ function cleanUpInput(object, valid_keys) {
     return ret;
 }
 
-function allRequiredKeysExist(object, required_keys) {
-    for (var key of required_keys) {
-        if (object[key] == null) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
 function questionCleanup(req, res) {
     var clean = cleanUpInput(req.body, ["question", "answers"]);
 
-    if (!allRequiredKeysExist(clean, ["question", "answers"])) {
+    if (!misc.allRequiredKeysExist(clean, ["question", "answers"])) {
         res.status(400).json({ code: 400, err: "BAD_REQUEST", message: "Not enough paramaters supplied" });
         return false;
     }
