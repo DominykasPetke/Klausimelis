@@ -9,21 +9,61 @@ const express = require('express');
 const router = express.Router();
 
 const crypto = require('crypto');
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
 
 const email_validator = require("email-validator");
 
-// OAuth
+passport.use(new LocalStrategy( { usernameField: 'email' }, function verify(email, password, cb) {
+    if (!email_validator.validate(email)) {
+        return cb(null, false, { message: 'Incorrect email or password.' });
+    }
+
+    connection.query('SELECT * FROM `users` WHERE `email` = ?;',
+        [email],
+        (err, rows, fields) => {
+            if (err) {
+                return cb(err);
+            }
+
+            if (rows.length < 1) {
+                return cb(null, false, { message: 'Incorrect email or password.' });
+            }
+
+            var user = rows[0];
+
+            crypto.pbkdf2(password, user.salt, 310000, 32, 'sha256', function (err, hashedPassword) {
+                if (err) {
+                    return cb(err);
+                }
+
+                if (!crypto.timingSafeEqual(user.password, hashedPassword)) {
+                    return cb(null, false, { message: 'Incorrect email or password.' });
+                }
+
+                delete user.password;
+                delete user.salt;
+
+                return cb(null, user);
+            });
+        });
+}));
+
+passport.serializeUser((user, done) => done(null, user));
+
+passport.deserializeUser((user, done) => done(null, user));
+
 router.get('/token', (req, res) => {
     var ret = misc.not_implemented_error;
     ret.text = "Token";
     res.status(501).json(ret);
 });
 
-router.post('/login', (req, res) => {
-    var ret = misc.not_implemented_error;
-    ret.text = "Login";
-    res.status(501).json(ret);
-});
+router.post('/login',
+    passport.authenticate('local'),
+    (req, res) => {
+        res.status(200).json(req.user);
+    });
 
 router.post('/register', (req, res) => {
     var clean = misc.cleanUpInput(req.body, ["username", "password", "email"]);
