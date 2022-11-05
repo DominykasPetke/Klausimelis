@@ -668,7 +668,6 @@ router.get('/topics/:topicId/questions', (req, res) => {
         });
 });
 
-
 function cleanUpInput(object, valid_keys) {
     var ret = {};
 
