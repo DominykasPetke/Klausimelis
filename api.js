@@ -8,6 +8,8 @@ const connection = require('./db');
 const express = require('express');
 const router = express.Router();
 
+const passport = require('passport');
+
 // topics
 router.get('/topics', (req, res) => {
     connection.query('SELECT * FROM `topics`;', (err, rows, fields) => {
