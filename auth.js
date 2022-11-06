@@ -11,6 +11,7 @@ const router = express.Router();
 const crypto = require('crypto');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
+const BearerStrategy = require('passport-http-bearer');
 
 const oauth2orize = require('oauth2orize');
 const server = oauth2orize.createServer(); 
