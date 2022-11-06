@@ -72,6 +72,8 @@ router.post('/topics', passport.authenticate('jwt'), (req, res) => {
         return;
     }
 
+    clean.FK_userId = req.user.id;
+
     connection.query('INSERT INTO `topics` SET ?;',
         [clean],
         (err, rows, fields) => {
@@ -135,6 +137,8 @@ router.patch('/topics/:topicId', passport.authenticate('jwt'), (req, res) => {
                 res.status(400).json({ code: 400, err: "BAD_REQUEST", message: "Not enough paramaters supplied" });
                 return;
             }
+
+            clean.FK_userId = req.user.id;
 
             connection.query('UPDATE `topics` SET ? WHERE `id` = ?;',
                 [clean, req.params.topicId],
@@ -221,10 +225,10 @@ router.get('/topics/:topicId/themes', (req, res) => {
 
                     rows.forEach(element => {
                         element.user = { id: element.FK_userId, username: element.username };
-        
+
                         delete element.FK_userId;
                         delete element.username;
-                    });        
+                    });
 
                     res.status(200).json(rows);
                 });
@@ -252,7 +256,7 @@ router.get('/topics/:topicId/themes/:themeId', (req, res) => {
 
             rows.forEach(element => {
                 element.user = { id: element.FK_userId, username: element.username };
-                
+
                 delete element.FK_topicId;
                 delete element.FK_userId;
                 delete element.username;
@@ -263,6 +267,11 @@ router.get('/topics/:topicId/themes/:themeId', (req, res) => {
 });
 
 router.post('/topics/:topicId/themes', passport.authenticate('jwt'), (req, res) => {
+    if (req.user.role < 1) { // if not teacher 
+        res.status(403).json(misc.forbidden_error);
+        return;
+    }
+
     connection.query('SELECT `id` FROM `topics` WHERE `id` = ?;',
         [req.params.topicId],
         (err, rows, fields) => {
@@ -289,6 +298,7 @@ router.post('/topics/:topicId/themes', passport.authenticate('jwt'), (req, res) 
             }
 
             clean.FK_topicId = req.params.topicId;
+            clean.FK_userId = req.user.id;
 
             connection.query('INSERT INTO `themes` SET ?;',
                 [clean],
@@ -323,13 +333,23 @@ router.post('/topics/:topicId/themes', passport.authenticate('jwt'), (req, res) 
 });
 
 router.patch('/topics/:topicId/themes/:themeId', passport.authenticate('jwt'), (req, res) => {
-    connection.query('SELECT `FK_topicId`, `id` FROM `themes` WHERE `FK_topicId` = ? AND `id` = ?;',
+    if (req.user.role < 1) { // if not teacher 
+        res.status(403).json(misc.forbidden_error);
+        return;
+    }
+
+    connection.query('SELECT `FK_topicId`, `id`, `FK_userId` FROM `themes` WHERE `FK_topicId` = ? AND `id` = ?;',
         [req.params.topicId, req.params.themeId],
         (err, rows, fields) => {
             if (err) {
                 misc.error500(err, req, res, null);
                 return;
             }
+
+            if (req.user.role < 2 && req.user.id != rows[0].FK_userId) { // if wrong teacher 
+                res.status(403).json(misc.forbidden_error);
+                return;
+            }        
 
             if (rows.length < 1) {
                 res.status(404).json(misc.not_found_error);
