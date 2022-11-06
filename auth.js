@@ -82,7 +82,7 @@ router.get('/user', passport.authenticate('jwt'), (req, res) => {
 });
 
 router.get('/user/:userId', passport.authenticate(['jwt', 'anonymous']), (req, res) => {
-    if (req.user.id == req.params.userId) {
+    if (req.user && req.user.id == req.params.userId) {
         res.status(200).json(req.user);
     }
     else {
@@ -91,6 +91,16 @@ router.get('/user/:userId', passport.authenticate(['jwt', 'anonymous']), (req, r
             (err, rows, fields) => {
                 if (err) {
                     misc.error500(err, req, res, null);
+                    return;
+                }
+
+                if (rows.length < 1) {
+                    res.status(404).json(misc.not_found_error);
+                    return;
+                }
+
+                if (rows[0].id != req.params.userId) {
+                    res.status(404).json(misc.not_found_error);
                     return;
                 }
 
@@ -108,6 +118,8 @@ router.post('/login',
             expiresIn: "2h",
             issuer: issuer
         });
+
+        req.logout(function (err) { });
 
         res.status(200).json(ret);
     });
