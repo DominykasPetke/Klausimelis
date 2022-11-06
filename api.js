@@ -547,11 +547,21 @@ router.get('/topics/:topicId/themes/:themeId/questions/:questionId', passport.au
 });
 
 router.post('/topics/:topicId/themes/:themeId/questions', passport.authenticate('jwt'), (req, res) => {
-    connection.query('SELECT `FK_topicId`, `id` FROM `themes` WHERE `FK_topicId` = ? AND `id` = ?;',
+    if (req.user.role < 1) { // if not teacher 
+        res.status(403).json(misc.forbidden_error);
+        return;
+    }
+
+    connection.query('SELECT `FK_topicId`, `id`, `FK_userId` FROM `themes` WHERE `FK_topicId` = ? AND `id` = ?;',
         [req.params.topicId, req.params.themeId],
         (err, rows, fields) => {
             if (err) {
                 misc.error500(err, req, res, null);
+                return;
+            }
+
+            if (req.user.role < 2 && rows.length > 0 && req.user.id != rows[0].FK_userId) { // if wrong teacher 
+                res.status(403).json(misc.forbidden_error);
                 return;
             }
 
@@ -608,6 +618,11 @@ router.post('/topics/:topicId/themes/:themeId/questions', passport.authenticate(
 });
 
 router.put('/topics/:topicId/themes/:themeId/questions/:questionId', passport.authenticate('jwt'), (req, res) => {
+    if (req.user.role < 1) { // if not teacher 
+        res.status(403).json(misc.forbidden_error);
+        return;
+    }
+
     connection.query('SELECT `FK_topicId`, `id` FROM `themes` WHERE `FK_topicId` = ? AND `id` = ?;',
         [req.params.topicId, req.params.themeId],
         (err, rows, fields) => {
@@ -626,11 +641,16 @@ router.put('/topics/:topicId/themes/:themeId/questions/:questionId', passport.au
                 return;
             }
 
-            connection.query('SELECT `FK_themeId`, `id` FROM `questions` WHERE `FK_themeId` = ? AND `id` = ?;',
+            connection.query('SELECT `FK_themeId`, `id`, `FK_userId` FROM `questions` WHERE `FK_themeId` = ? AND `id` = ?;',
                 [req.params.themeId, req.params.questionId],
                 (err, rows, fields) => {
                     if (err) {
                         misc.error500(err, req, res, null);
+                        return;
+                    }
+
+                    if (req.user.role < 2 && rows.length > 0 && req.user.id != rows[0].FK_userId) { // if wrong teacher 
+                        res.status(403).json(misc.forbidden_error);
                         return;
                     }
 
@@ -675,6 +695,11 @@ router.put('/topics/:topicId/themes/:themeId/questions/:questionId', passport.au
 });
 
 router.delete('/topics/:topicId/themes/:themeId/questions/:questionId', passport.authenticate('jwt'), (req, res) => {
+    if (req.user.role < 1) { // if not teacher 
+        res.status(403).json(misc.forbidden_error);
+        return;
+    }
+
     connection.query('SELECT `FK_topicId`, `id` FROM `themes` WHERE `FK_topicId` = ? AND `id` = ?;',
         [req.params.topicId, req.params.themeId],
         (err, rows, fields) => {
@@ -693,7 +718,7 @@ router.delete('/topics/:topicId/themes/:themeId/questions/:questionId', passport
                 return;
             }
 
-            connection.query('SELECT `FK_themeId`, `id` FROM `questions` WHERE `FK_themeId` = ? AND `id` = ?;',
+            connection.query('SELECT `FK_themeId`, `id`, `FK_userId` FROM `questions` WHERE `FK_themeId` = ? AND `id` = ?;',
                 [req.params.themeId, req.params.questionId],
                 (err, rows, fields) => {
                     if (err) {
@@ -701,6 +726,11 @@ router.delete('/topics/:topicId/themes/:themeId/questions/:questionId', passport
                         return;
                     }
 
+                    if (req.user.role < 2 && rows.length > 0 && req.user.id != rows[0].FK_userId) { // if wrong teacher 
+                        res.status(403).json(misc.forbidden_error);
+                        return;
+                    }
+        
                     if (rows.length < 1) {
                         res.status(404).json(misc.not_found_error);
                         return;
