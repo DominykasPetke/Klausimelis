@@ -11,9 +11,9 @@ const router = express.Router();
 const crypto = require('crypto');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
-const BearerStrategy = require('passport-http-bearer');
-
-const login = require('connect-ensure-login');
+const JwtStrategy = require('passport-jwt').Strategy,
+    ExtractJwt = require('passport-jwt').ExtractJwt;
+const issuer = "Klausimėlis";
 
 const email_validator = require("email-validator");
 
@@ -57,14 +57,38 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, function verify(email
         });
 }));
 
-router.get('/user', login.ensureLoggedIn(), (req, res) => {
+passport.use(new JwtStrategy({
+    secretOrKey: process.env.JWT_SECRET,
+    issuer: issuer,
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
+},
+    (jwt_payload, done) => {
+        var ret = {};
+
+        ret.username = jwt_payload.username;
+        ret.id = jwt_payload.id;
+        ret.email = jwt_payload.email;
+        ret.role = jwt_payload.role;
+
+        return done(null, ret);
+    }
+));
+
+router.get('/user', passport.authenticate('jwt'), (req, res) => {
     res.status(200).json(req.user);
 });
 
 router.post('/login',
     passport.authenticate('local'),
     (req, res) => {
-        res.status(200).json(req.user);
+        var ret = req.user;
+
+        ret.token = jwt.sign(req.user, process.env.JWT_SECRET, {
+            expiresIn: "2h",
+            issuer: issuer
+        });
+
+        res.status(200).json(ret);
     });
 
 router.post('/register', (req, res) => {
@@ -133,13 +157,6 @@ router.post('/register', (req, res) => {
                     });
             });
         });
-});
-
-router.post('/logout', function (req, res, next) {
-    req.logout(function (err) {
-        if (err) { return next(err); }
-        res.status(200).json();
-    });
 });
 
 module.exports = router;

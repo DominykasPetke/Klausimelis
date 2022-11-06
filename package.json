@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "connect-ensure-login": "^0.1.1",
     "email-validator": "^2.0.4",
     "express": "^4.18.1",
     "express-session": "^1.17.3",
@@ -8,6 +7,7 @@
     "mysql2": "^2.3.3",
     "passport": "^0.6.0",
     "passport-http-bearer": "^1.0.1",
+    "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0"
   }
 }
