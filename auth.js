@@ -87,15 +87,15 @@ router.get('/user/:userId', passport.authenticate(['jwt', 'anonymous']), (req, r
     }
     else {
         connection.query('SELECT `id`, `username` FROM `users` WHERE `id` = ?;',
-        [req.params.userId],
-        (err, rows, fields) => {
-            if (err) {
-                misc.error500(err, req, res, null);
-                return;
-            }
+            [req.params.userId],
+            (err, rows, fields) => {
+                if (err) {
+                    misc.error500(err, req, res, null);
+                    return;
+                }
 
-            res.status(200).json(rows[0]);
-        });
+                res.status(200).json(rows[0]);
+            });
     }
 });
 
