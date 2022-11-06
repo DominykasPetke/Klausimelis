@@ -21,7 +21,7 @@ app.use(session({
 
 const passport = require('passport');
 app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.session());
 
 const api_header = "/api/v1";
 app.use(api_header, auth);
