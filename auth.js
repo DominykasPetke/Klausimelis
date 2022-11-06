@@ -119,9 +119,11 @@ router.post('/login',
             issuer: issuer
         });
 
-        req.logout(function (err) { });
-
-        res.status(200).json(ret);
+        req.logout(function (err) {
+            req.session.destroy(function (err) {
+                res.status(200).json(ret);
+            });
+        });
     });
 
 router.post('/register', (req, res) => {
