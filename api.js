@@ -60,7 +60,7 @@ router.get('/topics/:topicId', (req, res) => {
 });
 
 router.post('/topics', passport.authenticate('jwt'), (req, res) => {
-    if (req.user.role < 2) {// if not admin 
+    if (req.user.role < 2) { // if not admin 
         res.status(403).json(misc.forbidden_error);
         return;
     }
@@ -92,21 +92,21 @@ router.post('/topics', passport.authenticate('jwt'), (req, res) => {
                         misc.error500(err, req, res, null);
                         return;
                     }
-                    
+
                     rows.forEach(element => {
                         element.user = { id: element.FK_userId, username: element.username };
-        
+
                         delete element.FK_userId;
                         delete element.username;
                     });
-        
+
                     res.location("/topics/" + rows[0].id).status(201).json(rows[0]);
                 });
         });
 });
 
 router.patch('/topics/:topicId', passport.authenticate('jwt'), (req, res) => {
-    if (req.user.role < 2) {// if not admin 
+    if (req.user.role < 2) { // if not admin 
         res.status(403).json(misc.forbidden_error);
         return;
     }
@@ -155,7 +155,7 @@ router.patch('/topics/:topicId', passport.authenticate('jwt'), (req, res) => {
 });
 
 router.delete('/topics/:topicId', passport.authenticate('jwt'), (req, res) => {
-    if (req.user.role < 2) {// if not admin 
+    if (req.user.role < 2) { // if not admin 
         res.status(403).json(misc.forbidden_error);
         return;
     }
@@ -211,7 +211,7 @@ router.get('/topics/:topicId/themes', (req, res) => {
                 return;
             }
 
-            connection.query('SELECT `themes`.`id`, `themes`.`name`, `themes`.`description` FROM `themes` WHERE `FK_topicId` = ?;',
+            connection.query('SELECT `themes`.`id`, `name`, `description`, `FK_userId`, `users`.`username` FROM `themes` LEFT JOIN `users` ON `themes`.`FK_userId` = `users`.`id` WHERE `FK_topicId` = ?;',
                 [req.params.topicId],
                 (err, rows, fields) => {
                     if (err) {
@@ -219,13 +219,20 @@ router.get('/topics/:topicId/themes', (req, res) => {
                         return;
                     }
 
+                    rows.forEach(element => {
+                        element.user = { id: element.FK_userId, username: element.username };
+        
+                        delete element.FK_userId;
+                        delete element.username;
+                    });        
+
                     res.status(200).json(rows);
                 });
         });
 });
 
 router.get('/topics/:topicId/themes/:themeId', (req, res) => {
-    connection.query('SELECT `themes`.`id`, `themes`.`name`, `themes`.`description`, `themes`.`FK_topicId` FROM `themes` WHERE `FK_topicId` = ? AND `id` = ?;',
+    connection.query('SELECT `themes`.`id`, `name`, `description`, `FK_topicId`, `FK_userId`, `users`.`username` FROM `themes` LEFT JOIN `users` ON `themes`.`FK_userId` = `users`.`id` WHERE `FK_topicId` = ? AND `themes`.`id` = ?;',
         [req.params.topicId, req.params.themeId],
         (err, rows, fields) => {
             if (err) {
@@ -243,7 +250,13 @@ router.get('/topics/:topicId/themes/:themeId', (req, res) => {
                 return;
             }
 
-            delete rows[0].FK_topicId;
+            rows.forEach(element => {
+                element.user = { id: element.FK_userId, username: element.username };
+                
+                delete element.FK_topicId;
+                delete element.FK_userId;
+                delete element.username;
+            });
 
             res.status(200).json(rows[0]);
         });
