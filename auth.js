@@ -99,7 +99,6 @@ router.get('/user/:userId', passport.authenticate(['jwt', 'anonymous']), (req, r
     }
 });
 
-
 router.post('/login',
     passport.authenticate('local'),
     (req, res) => {
