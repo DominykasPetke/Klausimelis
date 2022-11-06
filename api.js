@@ -215,7 +215,7 @@ router.get('/topics/:topicId/themes', (req, res) => {
                 return;
             }
 
-            connection.query('SELECT `themes`.`id`, `name`, `description`, `FK_userId`, `users`.`username` FROM `themes` LEFT JOIN `users` ON `themes`.`FK_userId` = `users`.`id` WHERE `FK_topicId` = ?;',
+            connection.query('SELECT `themes`.`id`, `name`, `description`, `FK_userId`, `username` FROM `themes` LEFT JOIN `users` ON `themes`.`FK_userId` = `users`.`id` WHERE `FK_topicId` = ?;',
                 [req.params.topicId],
                 (err, rows, fields) => {
                     if (err) {
@@ -437,7 +437,7 @@ router.delete('/topics/:topicId/themes/:themeId', passport.authenticate('jwt'), 
 });
 
 // questions
-router.get('/topics/:topicId/themes/:themeId/questions', (req, res) => {
+router.get('/topics/:topicId/themes/:themeId/questions', passport.authenticate(['jwt', 'anonymous']), (req, res) => {
     connection.query('SELECT `FK_topicId`, `id` FROM `themes` WHERE `FK_topicId` = ? AND `id` = ?;',
         [req.params.topicId, req.params.themeId],
         (err, rows, fields) => {
@@ -456,7 +456,7 @@ router.get('/topics/:topicId/themes/:themeId/questions', (req, res) => {
                 return;
             }
 
-            connection.query('SELECT `questions`.`id`, `questions`.`question`, `questions`.`FK_themeId`, `questions`.`answers` FROM `questions` WHERE `FK_themeId` = ?;',
+            connection.query('SELECT `questions`.`id`, `question`, `FK_themeId`, `answers`, `FK_userId`, `username` FROM `questions` LEFT JOIN `users` ON `questions`.`FK_userId` = `users`.`id` WHERE `FK_themeId` = ?;',
                 [req.params.themeId],
                 (err, rows, fields) => {
                     if (err) {
@@ -469,11 +469,19 @@ router.get('/topics/:topicId/themes/:themeId/questions', (req, res) => {
                         return;
                     }
 
-                    // potentially with no answers here?
                     rows.forEach(element => {
-                        element.answers = JSON.parse(element.answers);
+                        element.user = { id: element.FK_userId, username: element.username };
+
+                        delete element.FK_userId;
+                        delete element.username;
                         delete element.FK_themeId;
-                        // delete element.answers;
+
+                        if (req.user) {
+                            element.answers = JSON.parse(element.answers);
+                        }
+                        else {
+                            delete element.answers;
+                        }
                     });
 
                     res.status(200).json(rows);
@@ -481,8 +489,7 @@ router.get('/topics/:topicId/themes/:themeId/questions', (req, res) => {
         });
 });
 
-router.get('/topics/:topicId/themes/:themeId/questions/:questionId', (req, res) => {
-    // potentially include answers here?
+router.get('/topics/:topicId/themes/:themeId/questions/:questionId', passport.authenticate(['jwt', 'anonymous']), (req, res) => {
     connection.query('SELECT `FK_topicId`, `id` FROM `themes` WHERE `FK_topicId` = ? AND `id` = ?;',
         [req.params.topicId, req.params.themeId],
         (err, rows, fields) => {
@@ -501,7 +508,7 @@ router.get('/topics/:topicId/themes/:themeId/questions/:questionId', (req, res) 
                 return;
             }
 
-            connection.query('SELECT `questions`.`id`, `questions`.`question`, `questions`.`answers` FROM `questions` WHERE `FK_themeId` = ? AND `id` = ?',
+            connection.query('SELECT `questions`.`id`, `question`, `answers`, `FK_userId`, `username` FROM `questions` LEFT JOIN `users` ON `questions`.`FK_userId` = `users`.`id` WHERE `FK_themeId` = ? AND `questions`.`id` = ?',
                 [req.params.themeId, req.params.questionId],
                 (err, rows, fields) => {
                     if (err) {
@@ -519,10 +526,19 @@ router.get('/topics/:topicId/themes/:themeId/questions/:questionId', (req, res) 
                         return;
                     }
 
-                    // potentially with no answers here?
                     rows.forEach(element => {
-                        element.answers = JSON.parse(element.answers);
-                        // delete element.answers;
+                        element.user = { id: element.FK_userId, username: element.username };
+
+                        delete element.FK_userId;
+                        delete element.username;
+                        delete element.FK_themeId;
+
+                        if (req.user) {
+                            element.answers = JSON.parse(element.answers);
+                        }
+                        else {
+                            delete element.answers;
+                        }
                     });
 
                     res.status(200).json(rows[0]);
@@ -710,7 +726,7 @@ router.delete('/topics/:topicId/themes/:themeId/questions/:questionId', passport
 });
 
 // hierarchinis
-router.get('/topics/:topicId/questions', (req, res) => {
+router.get('/topics/:topicId/questions', passport.authenticate(['jwt', 'anonymous']), (req, res) => {
     connection.query('SELECT `id` FROM `topics` WHERE `id` = ?;',
         [req.params.topicId],
         (err, rows, fields) => {
@@ -729,18 +745,26 @@ router.get('/topics/:topicId/questions', (req, res) => {
                 return;
             }
 
-            connection.query('SELECT `questions`.`id`, `questions`.`FK_themeId` as themeId, `questions`.`question`, `questions`.`answers`, `themes`.`name`, `themes`.`description` FROM `questions` LEFT JOIN `themes` ON `questions`.`FK_themeId` = `themes`.`id` WHERE `themes`.`FK_topicId` = ?;',
+            connection.query('SELECT `questions`.`id`, `FK_themeId` as themeId, `question`, `answers`, `name`, `description`, `questions`.`FK_userId`, `username` FROM `questions` LEFT JOIN `themes` ON `questions`.`FK_themeId` = `themes`.`id` LEFT JOIN `users` ON `questions`.`FK_userId` = `users`.`id` WHERE `themes`.`FK_topicId` = ?;',
                 [req.params.topicId],
                 (err, rows, fields) => {
                     if (err) {
-                        misc.misc.error500(err, req, res, null);
+                        misc.error500(err, req, res, null);
                         return;
                     }
 
-                    // potentially with no answers here?
                     rows.forEach(element => {
-                        element.answers = JSON.parse(element.answers);
-                        // delete element.answers;
+                        element.user = { id: element.FK_userId, username: element.username };
+
+                        delete element.FK_userId;
+                        delete element.username;
+
+                        if (req.user) {
+                            element.answers = JSON.parse(element.answers);
+                        }
+                        else {
+                            delete element.answers;
+                        }
 
                         element.theme = {};
                         element.theme.id = element.themeId;
