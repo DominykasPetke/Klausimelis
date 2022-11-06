@@ -81,6 +81,25 @@ router.get('/user', passport.authenticate('jwt'), (req, res) => {
     res.status(200).json(req.user);
 });
 
+router.get('/user/:userId', passport.authenticate(['jwt', 'anonymous']), (req, res) => {
+    if (req.user.id == req.params.userId) {
+        res.status(200).json(req.user);
+    }
+    else {
+        connection.query('SELECT `id`, `username` FROM `users` WHERE `id` = ?;',
+        [req.params.userId],
+        (err, rows, fields) => {
+            if (err) {
+                misc.error500(err, req, res, null);
+                return;
+            }
+
+            res.status(200).json(rows[0]);
+        });
+    }
+});
+
+
 router.post('/login',
     passport.authenticate('local'),
     (req, res) => {
