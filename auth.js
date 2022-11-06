@@ -13,6 +13,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const JwtStrategy = require('passport-jwt').Strategy,
     ExtractJwt = require('passport-jwt').ExtractJwt;
+const AnonymousStrategy = require('passport-anonymous').Strategy;
 const issuer = "Klausimėlis";
 
 const email_validator = require("email-validator");
@@ -21,6 +22,8 @@ const jwt = require('jsonwebtoken');
 
 passport.serializeUser((user, done) => done(null, user));
 passport.deserializeUser((user, done) => done(null, user));
+
+passport.use(new AnonymousStrategy()); // for optional auth
 
 passport.use(new LocalStrategy({ usernameField: 'email' }, function verify(email, password, cb) {
     if (!email_validator.validate(email)) {
