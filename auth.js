@@ -13,18 +13,14 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const BearerStrategy = require('passport-http-bearer');
 
-const oauth2orize = require('oauth2orize');
-const server = oauth2orize.createServer(); 
-
 const login = require('connect-ensure-login');
 
 const email_validator = require("email-validator");
 
+const jwt = require('jsonwebtoken');
+
 passport.serializeUser((user, done) => done(null, user));
 passport.deserializeUser((user, done) => done(null, user));
-
-server.serializeClient((client, done) => done(null, client));
-server.deserializeClient((client, done) => done(null, client));
 
 passport.use(new LocalStrategy({ usernameField: 'email' }, function verify(email, password, cb) {
     if (!email_validator.validate(email)) {
