@@ -18,4 +18,16 @@ connection.on('error', function (err) {
     console.log(err); // 'ER_BAD_DB_ERROR'
 });
 
+
+var hours = 6;
+var the_interval = hours * 60 * 60 * 1000;
+
+setInterval(function () {
+    connection.ping(function (err) {
+        if (err) throw err;
+
+        console.log('Server responded to ping');
+    });
+}, the_interval);
+
 module.exports = connection;
