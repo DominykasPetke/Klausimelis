@@ -700,3 +700,66 @@ Authorization: Bearer {TOKEN}
 ]
 ```
 
+### GET user
+
+Grąžina vartotojo, kurio JWT token'ą turime, duomenis. Grąžinamoje informacijoje yra vartotojo slapyvardis, elektroninis paštas, ID ir rolės ID.
+
+#### Užklausos URL
+
+`/api/v1/user`
+
+#### Užklausos informacija
+
+| | Reikšmė |
+| - | - |
+| Atsako formatas | JSON | 
+| Atsako kodai | 200, 401, 500 |
+| Reikia autentifikacijos? | Taip |
+
+#### Pavyzdinė užklausa
+
+```
+GET /api/v1/user
+Authorization: Bearer {TOKEN}
+```
+
+#### Pavyzdinis atsakymas
+
+```
+{
+    "username": "Studis",
+    "id": 4,
+    "email": "studentai@klausimelis.lt",
+    "role": 0
+}
+```
+
+### GET user/{user_ID}
+
+Grąžina vartotojo duomenis. Jei tai yra tas pats vartotojas, kurio JWT token'ą turime, grąžinamoje informacijoje yra vartotojo slapyvardis, elektroninis paštas, ID ir rolės ID. Jei tai yra ne tas vartotojas arba mes esame neprisijungę, tada gaunama tik vartotojo ID ir slapyvardis.
+
+#### Užklausos URL
+
+`/api/v1/user/3`
+
+#### Užklausos informacija
+
+| | Reikšmė |
+| - | - |
+| Atsako formatas | JSON | 
+| Atsako kodai | 200, 404, 500 |
+| Reikia autentifikacijos? | Ne |
+
+#### Pavyzdinė užklausa
+
+`GET /api/v1/user/3`
+
+#### Pavyzdinis atsakymas
+
+```
+{
+    "id": 3,
+    "username": "Mokytojas"
+}
+```
+
