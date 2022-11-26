@@ -16,8 +16,8 @@ Veikimo principas – pačią kuriamą platformą sudaro dvi dalys: internetinė
 Neregistruotas vartotojas (svečias) gali:
 
 - Matyti sričių sąrašą;
-- Matyti srities klausimų rinkinius;
-- Matyti klausimų rinkinio klausimus.
+- Matyti srities temas;
+- Matyti temos klausimus.
 
 Mokinys gali:
 
@@ -27,17 +27,16 @@ Mokinys gali:
 Mokytojas savo srityje(-se) gali:
 
 - Kurti klausimų rinkinius.
-- Kurti klausimus ir jų atsakymo variantus jų sukurtuose klausimų rinkiniuose.
+- Kurti klausimus ir jų atsakymo variantus jų sukurtose temose.
 - Redaguoti savo sukurtus klausimus bei atsakymus.
 
 Administratorius gali:
 
 - Kurti sritis
 - Redaguoti sritis
-- Patvirtinti mokytojus bei priskirti jiems jų mokymo sritis.
+- Patvirtinti mokytojus.
 
 Užsiregistravęs vartotojas automatiškai yra mokinys, reikia administratoriaus patvirtinimo, kad taptų mokytoju.
-Mokytojas ne savo mokymo srityje turi tokias pačias privilegijas, kaip mokinys.
 
 ## Technologijos
 
