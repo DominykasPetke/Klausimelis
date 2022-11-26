@@ -85,3 +85,38 @@ Grąžina visas sistemoje esančias sritis. Grąžinamoje informacijoje yra srit
     }
 ]
 ```
+
+### GET topics/{ID}
+
+Grąžina vieną nurodytą sistemoje esančią sritį. Grąžinamoje informacijoje yra srities ID, pavadinimas, aprašymas bei vartotojo, kuris šią sritį sukūrė, duomenys.
+
+#### Užklausos URL
+
+`/api/v1/topics/{ID}`
+
+#### Užklausos informacija
+
+| | Reikšmė |
+| - | - |
+| Atsako formatas | JSON | 
+| Atsako kodai | 200, 404, 500 |
+| Reikia autentifikacijos? | Ne |
+
+#### Pavyzdinė užklausa
+
+`GET /api/v1/topics/1`
+
+#### Pavyzdinis atsakymas
+
+```
+{
+    "id": 1,
+    "name": "Matematika",
+    "description": "Paskaičiuokime, protingieji kurmiai",
+    "user": {
+        "id": 1,
+        "username": "QuantumLTU"
+    }
+}
+```
+
