@@ -428,3 +428,275 @@ Authorization: Bearer {TOKEN}
 ```
 ```
 
+### GET topics/{topic_ID}/themes/{theme_ID}/questions
+
+Grąžina visus temoje esančius klausimus. Grąžinamoje informacijoje yra klausimo ID, klausimas bei vartotojo, kuris šį klausimą sukūrė, duomenys. Taip pat, jei vartotojas yra prisijungęs, grąžinami atsakymo variantai ir teisingas atsakymas.
+
+#### Užklausos URL
+
+`/api/v1/topics/{topic_ID}/themes/{theme_ID}/questions`
+
+#### Užklausos informacija
+
+| | Reikšmė |
+| - | - |
+| Atsako formatas | JSON | 
+| Atsako kodai | 200, 404, 500 |
+| Reikia autentifikacijos? | Ne |
+
+#### Pavyzdinė užklausa
+
+```
+GET /api/v1/topics/1/themes/1/questions
+Authorization: Bearer {TOKEN}
+```
+
+#### Pavyzdinis atsakymas
+
+```
+[
+    {
+        "id": 20,
+        "question": "Kokia yra trikampio kampų suma?",
+        "answers": [
+            {
+                "answer": "180 laipsnių",
+                "is_correct": true
+            },
+            {
+                "answer": "0 laipsnių"
+            }
+        ],
+        "user": {
+            "id": 1,
+            "username": "QuantumLTU"
+        }
+    }
+]
+```
+
+### GET topics/{topic_ID}/themes/{theme_ID}/questions/{question_ID}
+
+Grąžina vieną temoje esantį klausimą. Grąžinamoje informacijoje yra klausimo ID, klausimas bei vartotojo, kuris šį klausimą sukūrė, duomenys. Taip pat, jei vartotojas yra prisijungęs, grąžinami atsakymo variantai ir teisingas atsakymas.
+
+#### Užklausos URL
+
+`/api/v1/topics/{topic_ID}/themes/{theme_ID}/questions/{question_ID}`
+
+#### Užklausos informacija
+
+| | Reikšmė |
+| - | - |
+| Atsako formatas | JSON | 
+| Atsako kodai | 200, 404, 500 |
+| Reikia autentifikacijos? | Ne |
+
+#### Pavyzdinė užklausa
+
+`GET /api/v1/topics/1/themes/1/questions/20`
+
+#### Pavyzdinis atsakymas
+
+```
+{
+    "id": 20,
+    "question": "Kokia yra trikampio kampų suma?",
+    "user": {
+        "id": 1,
+        "username": "QuantumLTU"
+    }
+}
+```
+
+### POST topics/{topic_ID}/themes/{theme_ID}/questions
+
+Sukuria klausimą. Užklausos kūne JSON formatu nurodomas klausimas bei atsakymo klausimų masyvas, kuriame bent vienas atsakymas turi būti pažymėtas teisingu. Grąžinamoje informacijoje yra klausimo ID, klausimas, atsakymo variantai bei vartotojo, kuris šį klausimą sukūrė, duomenys. Jei veiksmą atlieka mokytojas, tai klausimus galima kurti tik savo sukurtose temose.
+
+#### Užklausos URL
+
+`/api/v1/topics/{topic_ID}/themes/{theme_ID}/questions`
+
+#### Užklausos informacija
+
+| | Reikšmė |
+| - | - |
+| Atsako formatas | JSON | 
+| Atsako kodai | 201, 400, 401, 403, 500 |
+| Reikia autentifikacijos? | Taip |
+
+#### Parametrai
+
+| Parametras | Būtinas? | Aprašas | Pavyzdys | 
+| - | - | - | - |
+| `question` | Taip | Klausimas | `"Kiek yra 2 + 2?"` |
+| `answers` | Taip | Galimi klausimo atsakymo variantai | `[{"answer": "4", "is_correct": true}]` |
+
+#### Pavyzdinė užklausa
+
+```
+POST /api/v1/topics/1/themes/1/questions
+Authorization: Bearer {TOKEN}
+
+{
+    "question": "Klausimas",
+    "answers": [
+        {
+            "answer": "Neteisingas ats"
+        },
+        {
+            "answer": "Teisingas ats",
+            "is_correct": true
+        }
+    ]
+}
+```
+
+#### Pavyzdinis atsakymas
+
+```
+{
+    "id": 35,
+    "question": "Klausimas",
+    "answers": [
+        {
+            "answer": "Neteisingas ats"
+        },
+        {
+            "answer": "Teisingas ats",
+            "is_correct": true
+        }
+    ]
+}
+```
+
+### PUT topics/{topic_ID}/themes/{theme_ID}/questions/{question_ID}
+
+Redaguoja klausimą. Užklausos kūne JSON formatu nurodomas klausimas bei atsakymo klausimų masyvas, kuriame bent vienas atsakymas turi būti pažymėtas teisingu. Grąžinamoje informacijoje yra klausimo ID, klausimas, atsakymo variantai bei vartotojo, kuris šį klausimą sukūrė, duomenys. Jei veiksmą atlieka mokytojas, tai galima redaguoti tik savo sukurtus klausimus.
+
+#### Užklausos URL
+
+`/api/v1/topics/{topic_ID}/themes/{theme_ID}/questions/{question_ID}`
+
+#### Užklausos informacija
+
+| | Reikšmė |
+| - | - |
+| Atsako formatas | - | 
+| Atsako kodai | 204, 400, 401, 403, 404, 500 |
+| Reikia autentifikacijos? | Taip |
+
+#### Parametrai
+
+| Parametras | Būtinas? | Aprašas | Pavyzdys | 
+| - | - | - | - |
+| `question` | Taip | Klausimas | `"Kiek yra 2 + 2?"` |
+| `answers` | Taip | Galimi klausimo atsakymo variantai | `[{"answer": "4", "is_correct": true}]` |
+
+#### Pavyzdinė užklausa
+
+```
+PUT /api/v1/topics/1/themes/28
+Authorization: Bearer {TOKEN}
+
+{
+    "question": "Kokia yra penkiakampio kampų suma?",
+    "answers": [
+        {
+            "answer": "180 laipsnių"
+        },
+        {
+            "answer": "0 laipsnių"
+        },
+        {
+            "answer": "540 laipsnių",
+            "is_correct": true
+        }
+    ]
+}
+```
+
+#### Pavyzdinis atsakymas
+
+```
+```
+
+### DELETE topics/{topic_ID}/themes/{theme_ID}/questions/{question_ID}
+
+Ištrina klausimą. Būtina turėti bent mokytojo privilegijas šio veiksmo atlikimui. Jei veiksmą atlieka mokytojas, tai turi būti tas pats vartotojas, kuris sukūrė šį klausimą.
+
+#### Užklausos URL
+
+`/api/v1/topics/{topic_ID}/themes/{theme_ID}/questions/{question_ID}`
+
+#### Užklausos informacija
+
+| | Reikšmė |
+| - | - |
+| Atsako formatas | - | 
+| Atsako kodai | 204, 401, 403, 404, 500 |
+| Reikia autentifikacijos? | Taip |
+
+#### Pavyzdinė užklausa
+
+```
+DELETE /api/v1/topics/1/themes/1/33
+Authorization: Bearer {TOKEN}
+```
+
+#### Pavyzdinis atsakymas
+
+```
+```
+
+### GET topics/{topic_ID}/questions
+
+Grąžina visus srityje esančius klausimus. Grąžinamoje informacijoje yra klausimo ID, klausimas, vartotojo, kuris šį klausimą sukūrė, duomenys, bei temos, kurioje kiekvienas klausimas yra, informacija. Taip pat, jei vartotojas yra prisijungęs, grąžinami atsakymo variantai ir teisingas atsakymas.
+
+#### Užklausos URL
+
+`/api/v1/topics/{topic_ID}/questions`
+
+#### Užklausos informacija
+
+| | Reikšmė |
+| - | - |
+| Atsako formatas | JSON | 
+| Atsako kodai | 200, 404, 500 |
+| Reikia autentifikacijos? | Ne |
+
+#### Pavyzdinė užklausa
+
+```
+GET /api/v1/topics/1/questions
+Authorization: Bearer {TOKEN}
+```
+
+#### Pavyzdinis atsakymas
+
+```
+[
+    {
+        "id": 20,
+        "question": "Kokia yra trikampio kampų suma?",
+        "answers": [
+            {
+                "answer": "180 laipsnių",
+                "is_correct": true
+            },
+            {
+                "answer": "0 laipsnių"
+            }
+        ],
+        "user": {
+            "id": 1,
+            "username": "QuantumLTU"
+        },
+        "theme": {
+            "id": 1,
+            "name": "Geometrija",
+            "description": "Visokios įdomios formos"
+        }
+    }
+]
+```
+
