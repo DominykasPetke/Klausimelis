@@ -120,3 +120,52 @@ Grąžina vieną nurodytą sistemoje esančią sritį. Grąžinamoje informacijo
 }
 ```
 
+### POST topics
+
+Grąžina vieną nurodytą sistemoje esančią sritį. Grąžinamoje informacijoje yra srities ID, pavadinimas, aprašymas bei vartotojo, kuris šią sritį sukūrė, duomenys.
+
+#### Užklausos URL
+
+`/api/v1/topics`
+
+#### Užklausos informacija
+
+| | Reikšmė |
+| - | - |
+| Atsako formatas | JSON | 
+| Atsako kodai | 201, 400, 401, 403, 500 |
+| Reikia autentifikacijos? | Taip |
+
+#### Parametrai
+
+| Parametras | Būtinas? | Aprašas | Pavyzdys | 
+| - | - | - | - |
+| `name` | Taip | Srities pavadinimas | `"Geografija"` |
+| `description` | Ne | Srities aprašymas | `"Visa mūsų Žemė"` |
+
+#### Pavyzdinė užklausa
+
+```
+POST /api/v1/topics
+Authorization: Bearer {TOKEN}
+
+{
+    "name": "Geografija",
+    "description": "Visa mūsų Žemė"
+}
+```
+
+#### Pavyzdinis atsakymas
+
+```
+{
+    "id": 25,
+    "name": "Geografija",
+    "description": "Visa mūsų Žemė",
+    "user": {
+        "id": 1,
+        "username": "QuantumLTU"
+    }
+}
+```
+
