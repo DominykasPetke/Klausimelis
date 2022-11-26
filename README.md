@@ -122,7 +122,7 @@ Grąžina vieną nurodytą sistemoje esančią sritį. Grąžinamoje informacijo
 
 ### POST topics
 
-Sukuria sritį. Užklausos kūne JSON formatu nurodomas srities pavadinimas bei aprašymas. Grąžinamoje informacijoje yra srities ID, pavadinimas, aprašymas bei vartotojo, kuris šią sritį sukūrė, duomenys.
+Sukuria sritį. Užklausos kūne JSON formatu nurodomas srities pavadinimas bei aprašymas. Grąžinamoje informacijoje yra srities ID, pavadinimas, aprašymas bei vartotojo, kuris šią sritį sukūrė, duomenys. Būtina turėti administratoriaus privilegijas šio veiksmo atlikimui.
 
 #### Užklausos URL
 
@@ -171,7 +171,7 @@ Authorization: Bearer {TOKEN}
 
 ### PATCH topics/{ID}
 
-Redaguoja sritį. Užklausos kūne JSON formatu nurodomas naujas srities pavadinimas ir/arba aprašymas. Grąžinamoje informacijoje yra srities ID, pavadinimas, aprašymas bei vartotojo, kuris šią sritį sukūrė, duomenys.
+Redaguoja sritį. Užklausos kūne JSON formatu nurodomas naujas srities pavadinimas ir/arba aprašymas. Būtina turėti administratoriaus privilegijas šio veiksmo atlikimui.
 
 #### Užklausos URL
 
@@ -182,7 +182,7 @@ Redaguoja sritį. Užklausos kūne JSON formatu nurodomas naujas srities pavadin
 | | Reikšmė |
 | - | - |
 | Atsako formatas | - | 
-| Atsako kodai | 204, 400, 401, 403, 500 |
+| Atsako kodai | 204, 400, 401, 403, 404, 500 |
 | Reikia autentifikacijos? | Taip |
 
 #### Parametrai
@@ -204,6 +204,34 @@ Authorization: Bearer {TOKEN}
     "name": "Geografija",
     "description": "Visa mūsų Žemė"
 }
+```
+
+#### Pavyzdinis atsakymas
+
+```
+```
+
+### DELETE topics/{ID}
+
+Ištrina sritį ir visus duomenis susijusius su šia sritimi. Būtina turėti administratoriaus privilegijas šio veiksmo atlikimui.
+
+#### Užklausos URL
+
+`/api/v1/topics/{ID}`
+
+#### Užklausos informacija
+
+| | Reikšmė |
+| - | - |
+| Atsako formatas | - | 
+| Atsako kodai | 204, 401, 403, 404, 500 |
+| Reikia autentifikacijos? | Taip |
+
+#### Pavyzdinė užklausa
+
+```
+DELETE /api/v1/topics/25
+Authorization: Bearer {TOKEN}
 ```
 
 #### Pavyzdinis atsakymas
