@@ -122,7 +122,7 @@ Grąžina vieną nurodytą sistemoje esančią sritį. Grąžinamoje informacijo
 
 ### POST topics
 
-Grąžina vieną nurodytą sistemoje esančią sritį. Grąžinamoje informacijoje yra srities ID, pavadinimas, aprašymas bei vartotojo, kuris šią sritį sukūrė, duomenys.
+Sukuria sritį. Užklausos kūne JSON formatu nurodomas srities pavadinimas bei aprašymas. Grąžinamoje informacijoje yra srities ID, pavadinimas, aprašymas bei vartotojo, kuris šią sritį sukūrė, duomenys.
 
 #### Užklausos URL
 
@@ -169,3 +169,44 @@ Authorization: Bearer {TOKEN}
 }
 ```
 
+### PATCH topics/{ID}
+
+Redaguoja sritį. Užklausos kūne JSON formatu nurodomas naujas srities pavadinimas ir/arba aprašymas. Grąžinamoje informacijoje yra srities ID, pavadinimas, aprašymas bei vartotojo, kuris šią sritį sukūrė, duomenys.
+
+#### Užklausos URL
+
+`/api/v1/topics/{ID}`
+
+#### Užklausos informacija
+
+| | Reikšmė |
+| - | - |
+| Atsako formatas | - | 
+| Atsako kodai | 204, 400, 401, 403, 500 |
+| Reikia autentifikacijos? | Taip |
+
+#### Parametrai
+
+Privaloma nusiųsti bent vieną parametrą.
+
+| Parametras | Būtinas? | Aprašas | Pavyzdys | 
+| - | - | - | - |
+| `name` | Ne | Srities pavadinimas | `"Geografija"` |
+| `description` | Ne | Srities aprašymas | `"Visa mūsų Žemė"` |
+
+#### Pavyzdinė užklausa
+
+```
+PATCH /api/v1/topics/25
+Authorization: Bearer {TOKEN}
+
+{
+    "name": "Geografija",
+    "description": "Visa mūsų Žemė"
+}
+```
+
+#### Pavyzdinis atsakymas
+
+```
+```
