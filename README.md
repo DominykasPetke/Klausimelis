@@ -47,3 +47,41 @@ Užsiregistravęs vartotojas automatiškai yra mokinys, reikia administratoriaus
 ## Sistemos architektūra
 
 ![Sistemos architektūros paveikslas](https://i.imgur.com/riNftod.png)
+
+## API dokumentacija
+
+### GET topics
+
+Grąžina visas sistemoje esančias sritis. Grąžinamoje informacijoje yra srities ID, pavadinimas, aprašymas bei vartotojo, kuris šią sritį sukūrė, duomenys.
+
+#### Resource URL
+
+`/api/v1/topics`
+
+#### Resource Information
+
+| | Reikšmė |
+| - | - |
+| Atsako formatas | JSON | 
+| Atsako kodai | 200, 500 |
+| Reikia autentifikacijos? | Ne |
+
+#### Example Request
+
+`GET /api/v1/topics`
+
+####  Example Response
+
+```
+[
+    {
+        "id": 1,
+        "name": "Matematika",
+        "description": "Paskaičiuokime, protingieji kurmiai",
+        "user": {
+            "id": 1,
+            "username": "QuantumLTU"
+        }
+    }
+]
+```
