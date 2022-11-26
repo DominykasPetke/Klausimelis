@@ -86,13 +86,13 @@ Grąžina visas sistemoje esančias sritis. Grąžinamoje informacijoje yra srit
 ]
 ```
 
-### GET topics/{ID}
+### GET topics/{topic_ID}
 
 Grąžina vieną nurodytą sistemoje esančią sritį. Grąžinamoje informacijoje yra srities ID, pavadinimas, aprašymas bei vartotojo, kuris šią sritį sukūrė, duomenys.
 
 #### Užklausos URL
 
-`/api/v1/topics/{ID}`
+`/api/v1/topics/{topic_ID}`
 
 #### Užklausos informacija
 
@@ -169,13 +169,13 @@ Authorization: Bearer {TOKEN}
 }
 ```
 
-### PATCH topics/{ID}
+### PATCH topics/{topic_ID}
 
 Redaguoja sritį. Užklausos kūne JSON formatu nurodomas naujas srities pavadinimas ir/arba aprašymas. Būtina turėti administratoriaus privilegijas šio veiksmo atlikimui.
 
 #### Užklausos URL
 
-`/api/v1/topics/{ID}`
+`/api/v1/topics/{topic_ID}`
 
 #### Užklausos informacija
 
@@ -211,13 +211,13 @@ Authorization: Bearer {TOKEN}
 ```
 ```
 
-### DELETE topics/{ID}
+### DELETE topics/{topic_ID}
 
 Ištrina sritį ir visus duomenis susijusius su šia sritimi. Būtina turėti administratoriaus privilegijas šio veiksmo atlikimui.
 
 #### Užklausos URL
 
-`/api/v1/topics/{ID}`
+`/api/v1/topics/{topic_ID}`
 
 #### Užklausos informacija
 
