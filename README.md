@@ -54,11 +54,11 @@ Užsiregistravęs vartotojas automatiškai yra mokinys, reikia administratoriaus
 
 Grąžina visas sistemoje esančias sritis. Grąžinamoje informacijoje yra srities ID, pavadinimas, aprašymas bei vartotojo, kuris šią sritį sukūrė, duomenys.
 
-#### Resource URL
+#### Užklausos URL
 
 `/api/v1/topics`
 
-#### Resource Information
+#### Užklausos informacija
 
 | | Reikšmė |
 | - | - |
@@ -66,11 +66,11 @@ Grąžina visas sistemoje esančias sritis. Grąžinamoje informacijoje yra srit
 | Atsako kodai | 200, 500 |
 | Reikia autentifikacijos? | Ne |
 
-#### Example Request
+#### Pavyzdinė užklausa
 
 `GET /api/v1/topics`
 
-####  Example Response
+#### Pavyzdinis atsakymas
 
 ```
 [
