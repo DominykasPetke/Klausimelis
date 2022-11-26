@@ -238,3 +238,193 @@ Authorization: Bearer {TOKEN}
 
 ```
 ```
+
+### GET topics/{topic_ID}/themes
+
+Grąžina visas srityje esančias temas. Grąžinamoje informacijoje yra temos ID, pavadinimas, aprašymas bei vartotojo, kuris šią temą sukūrė, duomenys.
+
+#### Užklausos URL
+
+`/api/v1/topics/{topic_ID}/themes`
+
+#### Užklausos informacija
+
+| | Reikšmė |
+| - | - |
+| Atsako formatas | JSON | 
+| Atsako kodai | 200, 404, 500 |
+| Reikia autentifikacijos? | Ne |
+
+#### Pavyzdinė užklausa
+
+`GET /api/v1/topics/1/themes`
+
+#### Pavyzdinis atsakymas
+
+```
+[
+    {
+        "id": 1,
+        "name": "Geometrija",
+        "description": "Visokios įdomios formos",
+        "user": {
+            "id": 1,
+            "username": "QuantumLTU"
+        }
+    }
+]
+```
+
+### GET topics/{topic_ID}/themes/{theme_ID}
+
+Grąžina vieną nurodytą srityje esančią temą. Grąžinamoje informacijoje yra temos ID, pavadinimas, aprašymas bei vartotojo, kuris šią temą sukūrė, duomenys.
+
+#### Užklausos URL
+
+`/api/v1/topics/{topic_ID}/themes/{theme_ID}`
+
+#### Užklausos informacija
+
+| | Reikšmė |
+| - | - |
+| Atsako formatas | JSON | 
+| Atsako kodai | 200, 404, 500 |
+| Reikia autentifikacijos? | Ne |
+
+#### Pavyzdinė užklausa
+
+`GET /api/v1/topics/1/themes/1`
+
+#### Pavyzdinis atsakymas
+
+```
+{
+    "id": 1,
+    "name": "Geometrija",
+    "description": "Visokios įdomios formos",
+    "user": {
+        "id": 1,
+        "username": "QuantumLTU"
+    }
+}
+```
+
+### POST topics/{topic_ID}/themes
+
+Sukuria temą. Užklausos kūne JSON formatu nurodomas temos pavadinimas bei aprašymas. Grąžinamoje informacijoje yra temos ID, pavadinimas, aprašymas bei vartotojo, kuris šią temą sukūrė, duomenys. Būtina turėti bent mokytojo privilegijas šio veiksmo atlikimui.
+
+#### Užklausos URL
+
+`/api/v1/topics/{topic_ID}/themes`
+
+#### Užklausos informacija
+
+| | Reikšmė |
+| - | - |
+| Atsako formatas | JSON | 
+| Atsako kodai | 201, 400, 401, 403, 500 |
+| Reikia autentifikacijos? | Taip |
+
+#### Parametrai
+
+| Parametras | Būtinas? | Aprašas | Pavyzdys | 
+| - | - | - | - |
+| `name` | Taip | Temos pavadinimas | `"Europa"` |
+| `description` | Ne | Temos aprašymas | `"Europietizmas"` |
+
+#### Pavyzdinė užklausa
+
+```
+POST /api/v1/topics/1/themes
+Authorization: Bearer {TOKEN}
+
+{
+    "name": "Europa",
+    "description": "Europietizmas"
+}
+```
+
+#### Pavyzdinis atsakymas
+
+```
+{
+    "id": 28,
+    "name": "Europa",
+    "description": "Europietizmas",
+    "user": {
+        "id": 1,
+        "username": "QuantumLTU"
+    }
+}
+```
+
+### PATCH topics/{topic_ID}/themes/{theme_ID}
+
+Redaguoja temą. Užklausos kūne JSON formatu nurodomas naujas temos pavadinimas ir/arba aprašymas. Būtina turėti bent mokytojo privilegijas šio veiksmo atlikimui. Jei veiksmą atlieka mokytojas, tai turi būti tas pats vartotojas, kuris sukūrė šią temą.
+
+#### Užklausos URL
+
+`/api/v1/topics/{topic_ID}/themes/{theme_ID}`
+
+#### Užklausos informacija
+
+| | Reikšmė |
+| - | - |
+| Atsako formatas | - | 
+| Atsako kodai | 204, 400, 401, 403, 404, 500 |
+| Reikia autentifikacijos? | Taip |
+
+#### Parametrai
+
+Privaloma nusiųsti bent vieną parametrą.
+
+| Parametras | Būtinas? | Aprašas | Pavyzdys | 
+| - | - | - | - |
+| `name` | Ne | Temos pavadinimas | `"Europa"` |
+| `description` | Ne | Temos aprašymas | `"Europietizmas"` |
+
+#### Pavyzdinė užklausa
+
+```
+PATCH /api/v1/topics/1/themes/28
+Authorization: Bearer {TOKEN}
+
+{
+    "name": "Europa",
+    "description": "Europietizmas"
+}
+```
+
+#### Pavyzdinis atsakymas
+
+```
+```
+
+### DELETE topics/{topic_ID}/themes/{theme_ID}
+
+Ištrina temą ir visus duomenis susijusius su šia tema. Būtina turėti bent mokytojo privilegijas šio veiksmo atlikimui. Jei veiksmą atlieka mokytojas, tai turi būti tas pats vartotojas, kuris sukūrė šią temą.
+
+#### Užklausos URL
+
+`/api/v1/topics/{topic_ID}/themes/{theme_ID}`
+
+#### Užklausos informacija
+
+| | Reikšmė |
+| - | - |
+| Atsako formatas | - | 
+| Atsako kodai | 204, 401, 403, 404, 500 |
+| Reikia autentifikacijos? | Taip |
+
+#### Pavyzdinė užklausa
+
+```
+DELETE /api/v1/topics/1/themes/28
+Authorization: Bearer {TOKEN}
+```
+
+#### Pavyzdinis atsakymas
+
+```
+```
+
