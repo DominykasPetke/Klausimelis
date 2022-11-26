@@ -763,3 +763,96 @@ Grąžina vartotojo duomenis. Jei tai yra tas pats vartotojas, kurio JWT token'�
 }
 ```
 
+### POST login
+
+Prisijungiama prie sistemos. Užklausos kūne JSON formatu nurodomas vartotojo el. paštas bei slaptažodis. Alternatyviai, galima autentifikuotis ir JWT token'u, taip gaunant naują token'ą. 
+
+#### Užklausos URL
+
+`/api/v1/login`
+
+#### Užklausos informacija
+
+| | Reikšmė |
+| - | - |
+| Atsako formatas | JSON | 
+| Atsako kodai | 200, 401, 500 |
+| Reikia autentifikacijos? | Ne |
+
+#### Parametrai
+
+| Parametras | Būtinas? | Aprašas | Pavyzdys | 
+| - | - | - | - |
+| `email` | Taip | Naudotojo elektroninis paštas | `"dompet2@ktu.lt"` |
+| `password` | Taip | Naudotojo slaptažodis  | `"theverysecretpassword"` |
+
+#### Pavyzdinė užklausa
+
+```
+POST /api/v1/login
+
+{
+    "email": "dompet2@ktu.lt",
+    "password": "theverysecretpassword"
+}
+```
+
+#### Pavyzdinis atsakymas
+
+```
+{
+    "id": 1,
+    "username": "QuantumLTU",
+    "email": "dompet2@ktu.lt",
+    "role": 0,
+    "token": "{TOKEN}"
+}
+```
+
+### POST register
+
+Priregistruojama prie sistemos. Užklausos kūne JSON formatu nurodomas vartotojo el. paštas, slapyvardis bei slaptažodis. Alternatyviai, galima autentifikuotis ir JWT token'u, taip gaunant naują token'ą. 
+
+#### Užklausos URL
+
+`/api/v1/register`
+
+#### Užklausos informacija
+
+| | Reikšmė |
+| - | - |
+| Atsako formatas | JSON | 
+| Atsako kodai | 201, 400, 403, 500 |
+| Reikia autentifikacijos? | Ne |
+
+#### Parametrai
+
+| Parametras | Būtinas? | Aprašas | Pavyzdys | 
+| - | - | - | - |
+| `email` | Taip | Naudotojo elektroninis paštas | `"dompet2@ktu.lt"` |
+| `password` | Taip | Naudotojo slaptažodis  | `"theverysecretpassword"` |
+| `username` | Taip | Naudotojo slapyvardis  | `"Dėstytojas"` |
+
+
+#### Pavyzdinė užklausa
+
+```
+POST /api/v1/register
+
+{
+    "username": "Dėstytojas",
+    "email": "destai@klausimelis.lt",
+    "password": "password123"
+}
+```
+
+#### Pavyzdinis atsakymas
+
+```
+{
+    "id": 6,
+    "email": "destai@klausimelis.lt",
+    "username": "Dėstytojas"
+}
+```
+
