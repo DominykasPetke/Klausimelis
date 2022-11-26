@@ -581,6 +581,8 @@ router.post('/topics/:topicId/themes/:themeId/questions', passport.authenticate(
                 return;
             }
 
+            clean.FK_userId = req.user.id;
+
             connection.query('INSERT INTO `questions` SET ?;',
                 [clean],
                 (err, rows, fields) => {
