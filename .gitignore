@@ -1,5 +1,6 @@
 node_modules/
 
 run.sh
+start_front.sh
 
 .vscode/
