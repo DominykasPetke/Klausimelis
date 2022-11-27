@@ -1,12 +1,12 @@
 <script setup>
-import HelloWorld from "./components/HelloWorld.vue";
+import AppMenu from "./components/AppMenu.vue";
 import TheWelcome from "./components/TheWelcome.vue";
 </script>
 
 <template>
   <header>
     <img
-      alt="Vue logo"
+      alt="Klausimėlis logo"
       class="logo"
       src="./assets/question.svg"
       width="32"
@@ -14,7 +14,7 @@ import TheWelcome from "./components/TheWelcome.vue";
     />
 
     <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+      <AppMenu />
     </div>
   </header>
 
