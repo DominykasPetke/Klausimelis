@@ -13,9 +13,7 @@ import TheWelcome from "./components/TheWelcome.vue";
       height="32"
     />
 
-    <div class="wrapper">
-      <AppMenu />
-    </div>
+    <AppMenu />
   </header>
 
   <main>
@@ -42,7 +40,7 @@ header {
 }
 
 main {
-  max-width: 95%;
+  margin: 0 1rem;
 }
 
 @media (min-width: 1024px) {
@@ -53,7 +51,7 @@ main {
   }
 
   .logo {
-    margin: 0 2rem 0 0;
+    margin: 0 1rem 0 0;
   }
 
   header .wrapper {

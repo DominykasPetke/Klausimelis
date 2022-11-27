@@ -1,10 +1,13 @@
 <script setup>
+import MenuButton from "./MenuButton.vue";
+
 defineProps({});
 </script>
 
 <template>
+  <h1 class="green">Klausimėlis</h1>
   <div class="menu">
-    <h1 class="green">Klausimėlis</h1>
+    <MenuButton text="Sritys"></MenuButton>
   </div>
 </template>
 
@@ -14,13 +17,8 @@ h1 {
   font-size: 1.5rem;
 }
 
-.menu h1 {
-  text-align: center;
-}
-
 @media (min-width: 1024px) {
-  .menu h1,
-  .menu h3 {
+  h1 {
     text-align: left;
   }
 }
