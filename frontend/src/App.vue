@@ -2,24 +2,27 @@
 import { RouterLink, RouterView } from "vue-router";
 
 import AppMenu from "./components/AppMenu.vue";
-import TheWelcome from "./components/TheWelcome.vue";
 </script>
 
 <template>
   <header>
-    <img
-      alt="Klausimėlis logo"
-      class="logo"
-      src="./assets/question.svg"
-      width="32"
-      height="32"
-    />
+    <RouterLink to="/">
+      <img
+        alt="Klausimėlis logo"
+        class="logo"
+        src="./assets/question.svg"
+        width="32"
+        height="32"
+      />
+
+      <h1 class="green">Klausimėlis</h1>
+    </RouterLink>
 
     <AppMenu />
   </header>
 
   <main>
-    <TheWelcome />
+    <RouterView />
   </main>
 
   <footer>
@@ -47,11 +50,22 @@ main {
   margin: auto;
 }
 
+h1 {
+  font-weight: 400;
+  font-size: 1.5rem;
+  text-align: center;
+  margin-right: 0.5rem;
+}
+
 @media (min-width: 1024px) {
   header {
     display: flex;
     place-items: center;
     padding-right: calc(var(--section-gap) / 2);
+  }
+
+  h1 {
+    text-align: left;
   }
 
   .logo {

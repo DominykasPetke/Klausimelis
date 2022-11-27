@@ -13,7 +13,7 @@ defineProps({
 
 <template>
   <div class="button">
-    <a href="{{link}}">{{ text }}</a>
+    <RouterLink :to="link">{{ text }}</RouterLink>
   </div>
 </template>
 
