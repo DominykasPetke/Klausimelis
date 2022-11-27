@@ -8,6 +8,9 @@ defineProps({});
   <h1 class="green">Klausimėlis</h1>
   <div class="menu">
     <MenuButton text="Sritys"></MenuButton>
+    <MenuButton text="Temos"></MenuButton>
+    <MenuButton text="Klausimai"></MenuButton>
+    <MenuButton text="Sritys"></MenuButton>
   </div>
 </template>
 
@@ -16,11 +19,16 @@ h1 {
   font-weight: 400;
   font-size: 1.5rem;
   text-align: center;
+  margin-right: 0.5rem;
 }
 
 @media (min-width: 1024px) {
   h1 {
     text-align: left;
+  }
+
+  .menu {
+    display: flex;
   }
 }
 </style>

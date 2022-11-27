@@ -4,18 +4,22 @@ defineProps({
     type: String,
     required: true,
   },
+  link: {
+    type: String,
+    required: true,
+  },
 });
 </script>
 
 <template>
   <div class="button">
-    {{ text }}
+    <a href="{{link}}">{{ text }}</a>
   </div>
 </template>
 
 <style>
 .button {
   height: 100%;
-  margin: 0 1rem;
+  margin: 0 0.5rem;
 }
 </style>
