@@ -42,7 +42,7 @@ Užsiregistravęs vartotojas automatiškai yra mokinys, reikia administratoriaus
 
 - Back-end: Node.js + ExpressJS
 - Duomenų bazė: MariaDB (MySQL)
-- Front-end: Bulma + JavaScript moduliai duomenų užkrovimui bei papildomai stilizacijai.
+- Front-end: Vue
 
 ## Sistemos architektūra
 
