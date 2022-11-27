@@ -14,7 +14,9 @@ import AppMenu from "./components/AppMenu.vue";
         width="32"
         height="32"
       />
+    </RouterLink>
 
+    <RouterLink to="/">
       <h1 class="green">Klausimėlis</h1>
     </RouterLink>
 
