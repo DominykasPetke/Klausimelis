@@ -9,8 +9,8 @@ import TheWelcome from "./components/TheWelcome.vue";
       alt="Vue logo"
       class="logo"
       src="./assets/question.svg"
-      width="125"
-      height="125"
+      width="32"
+      height="32"
     />
 
     <div class="wrapper">
@@ -31,11 +31,18 @@ import TheWelcome from "./components/TheWelcome.vue";
 <style scoped>
 header {
   line-height: 1.5;
+  background-color: rgba(102, 153, 0, 0.25);
+  color: white;
+  padding: 0.5rem;
 }
 
 .logo {
   display: block;
   margin: 0 auto 2rem;
+}
+
+main {
+  max-width: 95%;
 }
 
 @media (min-width: 1024px) {
@@ -57,17 +64,17 @@ header {
 }
 
 footer {
-  /* flex-wrap: wrap; */
   width: 100%;
   background-color: rgba(255, 255, 255, 0.1);
-  padding: 1rem;
-}
-
-footer .left {
-  float: left;
+  padding: 0.5rem;
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  column-gap: 8px;
+  grid-auto-rows: min-content;
 }
 
 footer .right {
-  float: right;
+  text-align: right;
 }
 </style>
