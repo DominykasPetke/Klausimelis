@@ -2,7 +2,7 @@
 
 #app {
   font-weight: normal;
-  margin: auto;
+  width: 100%;
 }
 
 a,
@@ -22,9 +22,5 @@ a,
   body {
     display: flex;
     place-items: center;
-  }
-
-  #app {
-    padding: 0 1rem;
   }
 }

@@ -32,15 +32,17 @@ header {
   background-color: rgba(102, 153, 0, 0.25);
   color: white;
   padding: 0.5rem;
+  width: 100%;
 }
 
 .logo {
   display: block;
-  margin: 0 auto 2rem;
+  margin: 0 auto;
 }
 
 main {
-  margin: 0 1rem;
+  width: 95%;
+  margin: auto;
 }
 
 @media (min-width: 1024px) {

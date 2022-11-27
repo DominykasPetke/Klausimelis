@@ -15,6 +15,7 @@ defineProps({});
 h1 {
   font-weight: 400;
   font-size: 1.5rem;
+  text-align: center;
 }
 
 @media (min-width: 1024px) {
