@@ -1,4 +1,6 @@
 <script setup>
+import { RouterLink, RouterView } from "vue-router";
+
 import AppMenu from "./components/AppMenu.vue";
 import TheWelcome from "./components/TheWelcome.vue";
 </script>
