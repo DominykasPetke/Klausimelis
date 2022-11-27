@@ -2,16 +2,36 @@
 import MenuButton from "./MenuButton.vue";
 
 defineProps({});
+
+const menuItems = [
+  {
+    name: "Sritys",
+    link: "/about",
+  },
+  {
+    name: "Temos",
+    link: "/about",
+  },
+  {
+    name: "Klausimai",
+    link: "/about",
+  },
+  {
+    name: "Prisijungti",
+    link: "/about",
+  },
+];
 </script>
 
 <template>
-  <div class="menu">
-    <MenuButton text="Sritys" link="/about"></MenuButton>
-    <MenuButton text="Temos" link="/about"></MenuButton>
-    <MenuButton text="Klausimai" link="/about"></MenuButton>
-    <MenuButton text="Sritys" link="/about"></MenuButton>
+  <div class="menu" v-for="item in menuItems" :key="item.name">
+    <MenuButton :text="item.name" :link="item.link"></MenuButton>
   </div>
-  <div class="mobileMenu">Mobile Menu</div>
+  <div class="mobileMenu">
+    <li v-for="item in menuItems" :key="item.name">
+      <MenuButton :text="item.name" :link="item.link"></MenuButton>
+    </li>
+  </div>
 </template>
 
 <style scoped>
