@@ -11,12 +11,21 @@ defineProps({});
     <MenuButton text="Klausimai" link="/about"></MenuButton>
     <MenuButton text="Sritys" link="/about"></MenuButton>
   </div>
+  <div class="mobileMenu">Mobile Menu</div>
 </template>
 
 <style scoped>
+.menu {
+  display: none;
+}
+
 @media (min-width: 1024px) {
   .menu {
     display: flex;
+  }
+
+  .mobileMenu {
+    display: none;
   }
 }
 </style>
