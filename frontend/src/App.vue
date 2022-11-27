@@ -8,7 +8,7 @@ import TheWelcome from "./components/TheWelcome.vue";
     <img
       alt="Vue logo"
       class="logo"
-      src="./assets/logo.svg"
+      src="./assets/question.svg"
       width="125"
       height="125"
     />
@@ -21,6 +21,11 @@ import TheWelcome from "./components/TheWelcome.vue";
   <main>
     <TheWelcome />
   </main>
+
+  <footer>
+    <p class="left">Klausimėlis, 2022.</p>
+    <p class="right">Autorius: Dominykas Petkevičius, IFF-9/7</p>
+  </footer>
 </template>
 
 <style scoped>
@@ -49,5 +54,20 @@ header {
     place-items: flex-start;
     flex-wrap: wrap;
   }
+}
+
+footer {
+  /* flex-wrap: wrap; */
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+}
+
+footer .left {
+  float: left;
+}
+
+footer .right {
+  float: right;
 }
 </style>

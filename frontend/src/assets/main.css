@@ -1,9 +1,9 @@
 @import './base.css';
 
 #app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  max-width: 90%;
+  margin: auto;
+  padding: 2rem 6re;
 
   font-weight: normal;
 }
@@ -11,7 +11,7 @@
 a,
 .green {
   text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
+  color: #669900;
   transition: 0.4s;
 }
 
@@ -29,7 +29,7 @@ a,
 
   #app {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
+    /* grid-template-columns: 1fr 1fr; */
+    padding: 1rem;
   }
 }
