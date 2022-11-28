@@ -35,7 +35,9 @@ const toggleMenu = () => {
     <MenuButton :text="item.name" :link="item.link"></MenuButton>
   </div>
   <div class="mobileMenu">
-    <button @click="toggleMenu">Click</button>
+    <button class="burger" @click="toggleMenu">
+      <img src="src/assets/hamborgar.svg" />
+    </button>
     <nav v-show="navVisible">
       <div v-for="item in menuItems" :key="item.name">
         <MenuButton :text="item.name" :link="item.link"></MenuButton>
@@ -47,6 +49,12 @@ const toggleMenu = () => {
 <style scoped>
 .menu {
   display: none;
+}
+
+.burger {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 0;
+  width: 100%;
 }
 
 @media (min-width: 1024px) {
