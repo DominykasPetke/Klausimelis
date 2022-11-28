@@ -87,7 +87,7 @@ footer {
   padding: 0.5rem;
   margin-top: 1rem;
   display: grid;
-  grid-template-columns: 120px 1fr;
+  grid-template-columns: 130px 1fr;
   column-gap: 8px;
   grid-auto-rows: min-content;
 }
