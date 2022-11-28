@@ -1,5 +1,6 @@
 <script setup>
 import MenuButton from "./MenuButton.vue";
+import { ref } from "vue";
 
 defineProps({});
 
@@ -21,6 +22,12 @@ const menuItems = [
     link: "/about",
   },
 ];
+
+const navVisible = ref(false);
+
+const toggleMenu = () => {
+  navVisible.value = !navVisible.value;
+};
 </script>
 
 <template>
@@ -28,9 +35,12 @@ const menuItems = [
     <MenuButton :text="item.name" :link="item.link"></MenuButton>
   </div>
   <div class="mobileMenu">
-    <li v-for="item in menuItems" :key="item.name">
-      <MenuButton :text="item.name" :link="item.link"></MenuButton>
-    </li>
+    <button @click="toggleMenu">Click</button>
+    <nav v-show="navVisible">
+      <div v-for="item in menuItems" :key="item.name">
+        <MenuButton :text="item.name" :link="item.link"></MenuButton>
+      </div>
+    </nav>
   </div>
 </template>
 
