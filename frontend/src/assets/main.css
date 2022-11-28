@@ -8,7 +8,7 @@
 a,
 .green {
   text-decoration: none;
-  color: #669900;
+  color: rgb(102, 153, 0);
   transition: 0.4s;
 }
 
