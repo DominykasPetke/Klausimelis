@@ -46,7 +46,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  Vartotojo informacija:
+  <h1>Vartotojo informacija:</h1>
   <div v-show="!isLoading">
     <p>Slapyvardis: {{ user.username }}</p>
     <p v-if="user.email != null">El. paštas: {{ user.email }}</p>

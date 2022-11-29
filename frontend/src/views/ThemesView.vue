@@ -60,8 +60,7 @@ async function getThemes() {
 </script>
 
 <template>
-  Klausimėlio temos:
-  <br />
+  <h1>Klausimėlio temos:</h1>
   <div v-show="!isTopicsLoading">
     Pasirinkite sritį:
     <select @change="onSelectChange()" v-model="selectedTopic">
