@@ -42,6 +42,12 @@ const router = createRouter({
       name: "register",
       component: () => import("../views/RegisterView.vue"),
     },
+    {
+      path: "/user",
+      name: "user",
+      component: () => import("../views/UsersView.vue"),
+      props: (route) => ({ userId: route.query.userId }),
+    },
   ],
 });
 
