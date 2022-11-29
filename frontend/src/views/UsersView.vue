@@ -1,7 +1,7 @@
 <script setup>
 import { ref, inject, onBeforeMount } from "vue";
 
-const props = defineProps({ userId: String });
+const props = defineProps({ userId: { type: String, required: true } });
 
 const baseAPIURL = inject("baseAPIURL");
 const user = ref({});
@@ -46,11 +46,11 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  User info:
+  Vartotojo informacija:
   <div v-show="!isLoading">
-    <p>Username: {{ user.username }}</p>
-    <p v-if="user.email != null">Email: {{ user.email }}</p>
-    <p v-if="user.role != null">Role: {{ roleToText(user.role) }}</p>
+    <p>Slapyvardis: {{ user.username }}</p>
+    <p v-if="user.email != null">El. paštas: {{ user.email }}</p>
+    <p v-if="user.role != null">Rolė: {{ roleToText(user.role) }}</p>
   </div>
 </template>
 

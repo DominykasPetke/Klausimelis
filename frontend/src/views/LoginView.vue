@@ -1,3 +1,3 @@
-<template>Login</template>
+<template>Prisijungimas</template>
 
 <style></style>

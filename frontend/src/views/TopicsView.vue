@@ -31,7 +31,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  Topics.
+  Klausimėlio sritys:
   <div v-show="!isLoading">
     <ul v-for="item in topics" :key="item.id">
       <li>

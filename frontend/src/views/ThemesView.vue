@@ -14,7 +14,9 @@ function closeModal() {
 </script>
 
 <template>
-  Themes
+  Klausimėlio temos:
+  <br />
+  Pasirinkite sritį:
   <button type="button" class="btn" @click="showModal">Open Modal!</button>
 
   <TopicsModal v-show="isModalVisible" @close="closeModal" />

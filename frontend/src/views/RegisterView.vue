@@ -1,3 +1,3 @@
-<template>Register</template>
+<template>Registracija</template>
 
 <style></style>
