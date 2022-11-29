@@ -40,7 +40,7 @@ const toggleMenu = () => {
   </div>
   <div class="mobileMenu">
     <button class="burger" @click="toggleMenu">
-      <img src="src/assets/hamborgar.svg" />
+      <img src="../assets/hamborgar.svg" />
     </button>
     <nav v-show="navVisible">
       <div v-for="item in menuItems" :key="item.name">

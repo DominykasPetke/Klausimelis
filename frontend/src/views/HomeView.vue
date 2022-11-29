@@ -5,7 +5,7 @@
     <img
       alt="Klausimėlis logo"
       class="logo"
-      src="src/assets/question.svg"
+      src="../assets/question.svg"
       width="512"
       height="512"
     />
