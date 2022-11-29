@@ -7,15 +7,15 @@ defineProps({});
 const menuItems = [
   {
     name: "Sritys",
-    link: "/about",
+    link: "/topics",
   },
   {
     name: "Temos",
-    link: "/about",
+    link: "/themes",
   },
   {
     name: "Klausimai",
-    link: "/about",
+    link: "/questions",
   },
   {
     name: "Apie",
@@ -23,7 +23,7 @@ const menuItems = [
   },
   {
     name: "Prisijungti",
-    link: "/about",
+    link: "/login",
   },
 ];
 
