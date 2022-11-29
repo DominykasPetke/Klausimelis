@@ -17,35 +17,23 @@ async function getData() {
         error.json = res.json();
         throw error;
       }
-      console.log(res);
+
       const ret = res.json();
-      console.log(ret);
       return ret;
     })
     .then((json) => {
-      console.log(json);
-
       topics.value = json;
       isLoading.value = false;
-      console.log(topics.value);
-      console.log(!isLoading.value);
     });
 }
 
 onBeforeMount(() => {
   getData();
 });
-
-// onMounted(() => {
-//   getData();
-// });
-// const data = await req.json();
-// topics.value = data;
 </script>
 
 <template>
   Topics.
-  {{ baseAPIURL + "/topics" }}
   <div v-show="!isLoading">
     {{ topics }}
     <ul v-for="item in topics" :key="item.id">
