@@ -9,3 +9,4 @@ const app = createApp(App);
 app.use(router);
 
 app.mount("#app");
+app.provide("baseAPIURL", import.meta.env.VITE_API_BASE_URL);
