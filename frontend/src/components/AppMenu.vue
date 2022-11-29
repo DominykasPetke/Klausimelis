@@ -18,6 +18,10 @@ const menuItems = [
     link: "/about",
   },
   {
+    name: "Apie",
+    link: "/about",
+  },
+  {
     name: "Prisijungti",
     link: "/about",
   },

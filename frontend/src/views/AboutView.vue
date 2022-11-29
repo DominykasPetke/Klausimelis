@@ -1,15 +1,6 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
-  </div>
+  Šis puslapis yra universitetinis puslapis, sukurtas per Saitynų modulį. Jis
+  yra skirtas kaip klientinė dalis anksčiau padarytam API.
 </template>
 
-<style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
-}
-</style>
+<style></style>
