@@ -33,12 +33,13 @@ onBeforeMount(() => {
 <template>
   Topics.
   <div v-show="!isLoading">
-    {{ topics }}
     <ul v-for="item in topics" :key="item.id">
-      <li>{{ item.name }} - {{ item.description }}</li>
-      <RouterLink :to="{ path: '/user', query: { userId: item.user.id } }">{{
-        item.user.username
-      }}</RouterLink>
+      <li>
+        {{ item.name }} - {{ item.description }} -
+        <RouterLink :to="{ path: '/user', query: { userId: item.user.id } }">{{
+          item.user.username
+        }}</RouterLink>
+      </li>
     </ul>
   </div>
 </template>
