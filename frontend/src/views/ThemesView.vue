@@ -1,25 +1,39 @@
 <script setup>
-import TopicsModal from "../modals/TopicsModal.vue";
-import { ref } from "vue";
+import { ref, inject, onBeforeMount } from "vue";
 
-const isModalVisible = ref(false);
+const baseAPIURL = inject("baseAPIURL");
+const topics = ref([]);
+const isLoading = ref(true);
 
-function showModal() {
-  isModalVisible.value = true;
+async function getTopics() {
+  return fetch(baseAPIURL + "/topics")
+    .then((res) => {
+      // a non-200 response code
+      if (!res.ok) {
+        // create error instance with HTTP status text
+        const error = new Error(res.statusText);
+        error.json = res.json();
+        throw error;
+      }
+
+      const ret = res.json();
+      return ret;
+    })
+    .then((json) => {
+      topics.value = json;
+      isLoading.value = false;
+    });
 }
 
-function closeModal() {
-  isModalVisible.value = false;
-}
+onBeforeMount(() => {
+  getTopics();
+});
 </script>
 
 <template>
   Klausimėlio temos:
   <br />
   Pasirinkite sritį:
-  <button type="button" class="btn" @click="showModal">Open Modal!</button>
-
-  <TopicsModal v-show="isModalVisible" @close="closeModal" />
 </template>
 
 <style></style>
