@@ -54,7 +54,7 @@ onBeforeMount(() => {
       <RouterLink :to="item.link">{{ item.name }}</RouterLink>
     </div>
     <div class="button" v-if="token != null">
-      Vartotojas: {{ token.username }}
+      Vartotojas: <RouterLink to="/user">{{ token.username }}</RouterLink>
     </div>
   </div>
 
