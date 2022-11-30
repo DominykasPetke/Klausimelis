@@ -1,14 +1,23 @@
 <script setup>
 import { ref, inject, onBeforeMount } from "vue";
 
-const props = defineProps({ userId: { type: String, required: true } });
+const props = defineProps({ userId: { type: String, required: false } });
 
 const baseAPIURL = inject("baseAPIURL");
 const user = ref({});
 const isLoading = ref(true);
 
+const token = localStorage.getItem("token");
+
 async function getData() {
-  return fetch(baseAPIURL + "/user/" + props.userId)
+  return fetch(
+    baseAPIURL + "/user/" + (props.userId == null ? "" : props.userId),
+    {
+      headers: {
+        Authorization: "Bearer " + (token == null ? "" : token),
+      },
+    }
+  )
     .then((res) => {
       // a non-200 response code
       if (!res.ok) {
@@ -28,12 +37,16 @@ async function getData() {
 }
 
 function roleToText(role) {
+  console.log(role);
   switch (role) {
     case "0":
+    case 0:
       return "Mokinys (-ė)";
     case "1":
+    case 1:
       return "Mokytojas (-a)";
     case "2":
+    case 2:
       return "Administratorius (-ė)";
     default:
       break;
