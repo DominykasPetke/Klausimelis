@@ -1,5 +1,6 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onBeforeMount } from "vue";
+import { decodeToken } from "../utilities";
 
 defineProps({});
 
@@ -26,23 +27,42 @@ const menuItems = ref([
   },
 ]);
 
+const token = ref(null);
+
 const navVisible = ref(false);
 
 const toggleMenu = () => {
   navVisible.value = !navVisible.value;
 };
+
+onBeforeMount(() => {
+  token.value = decodeToken();
+
+  if (token.value != null) {
+    menuItems.value.pop();
+    menuItems.value.push({ name: "Atsijungti", link: "/logout" });
+  } else {
+    menuItems.value.pop();
+    menuItems.value.push({ name: "Prisijungti", link: "/login" });
+  }
+});
 </script>
 
 <template>
-  <div class="menu" v-for="item in menuItems" :key="item.name">
-    <div class="button">
+  <div class="menu">
+    <div class="button" v-for="item in menuItems" :key="item.name">
       <RouterLink :to="item.link">{{ item.name }}</RouterLink>
     </div>
+    <div class="button" v-if="token != null">
+      Vartotojas: {{ token.username }}
+    </div>
   </div>
+
   <div class="mobileMenu">
     <button class="burger" @click="toggleMenu">
       <img src="../assets/hamborgar.svg" />
     </button>
+
     <nav v-show="navVisible">
       <div v-for="item in menuItems" :key="item.name">
         <div class="button">
