@@ -37,7 +37,6 @@ async function getData() {
 }
 
 function roleToText(role) {
-  console.log(role);
   switch (role) {
     case "0":
     case 0:
