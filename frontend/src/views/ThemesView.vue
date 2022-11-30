@@ -62,12 +62,14 @@ async function getThemes() {
 <template>
   <h1>Klausimėlio temos:</h1>
   <div v-show="!isTopicsLoading">
-    Pasirinkite sritį:
-    <select @change="onSelectChange()" v-model="selectedTopic">
-      <option v-for="topic in topics" :key="topic.id" :value="topic.id">
-        {{ topic.name }}
-      </option>
-    </select>
+    <div class="grid">
+      Pasirinkite sritį:
+      <select @change="onSelectChange()" v-model="selectedTopic">
+        <option v-for="topic in topics" :key="topic.id" :value="topic.id">
+          {{ topic.name }}
+        </option>
+      </select>
+    </div>
 
     <div v-show="!isThemesLoading">
       <ul v-for="item in themes" :key="item.id">
@@ -83,4 +85,9 @@ async function getThemes() {
   </div>
 </template>
 
-<style></style>
+<style>
+.grid {
+  display: grid;
+  grid-template-columns: 150px 300px;
+}
+</style>

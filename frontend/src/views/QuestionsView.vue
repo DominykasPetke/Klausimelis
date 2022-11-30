@@ -120,20 +120,24 @@ function onThemeSelectChange() {
 <template>
   <h1>Klausimėlio klausimai:</h1>
   <div v-show="!isTopicsLoading">
-    Pasirinkite sritį:
-    <select @change="onTopicSelectChange()" v-model="selectedTopic">
-      <option v-for="topic in topics" :key="topic.id" :value="topic.id">
-        {{ topic.name }}
-      </option>
-    </select>
-
-    <div v-show="!isThemesLoading">
-      Pasirinkite temą:
-      <select @change="onThemeSelectChange()" v-model="selectedTheme">
-        <option v-for="theme in themes" :key="theme.id" :value="theme.id">
-          {{ theme.name }}
+    <div class="grid">
+      Pasirinkite sritį:
+      <select @change="onTopicSelectChange()" v-model="selectedTopic">
+        <option v-for="topic in topics" :key="topic.id" :value="topic.id">
+          {{ topic.name }}
         </option>
       </select>
+    </div>
+
+    <div v-show="!isThemesLoading">
+      <div class="grid">
+        Pasirinkite temą:
+        <select @change="onThemeSelectChange()" v-model="selectedTheme">
+          <option v-for="theme in themes" :key="theme.id" :value="theme.id">
+            {{ theme.name }}
+          </option>
+        </select>
+      </div>
     </div>
 
     <div v-show="!isQuestionsLoading">
@@ -151,4 +155,9 @@ function onThemeSelectChange() {
   </div>
 </template>
 
-<style></style>
+<style>
+.grid {
+  display: grid;
+  grid-template-columns: 150px 300px;
+}
+</style>
