@@ -16,6 +16,10 @@ module.exports.allRequiredKeysExist = function (object, required_keys) {
         if (object[key] == null) {
             return false;
         }
+
+        if (object[key].length <= 0) {
+            return false;
+        }
     }
 
     return true;
