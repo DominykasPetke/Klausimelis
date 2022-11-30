@@ -38,6 +38,10 @@ async function getLogin() {
 
       if (e.message == "Unauthorized") {
         error.value = "Neteisingas el. paštas arba slaptažodis";
+      } else if (e.message == "Bad Request") {
+        if (e.json.message == "Not enough paramaters supplied") {
+          error.value = "Įvesti ne visi laukai.";
+        }
       } else {
         error.value = e;
       }

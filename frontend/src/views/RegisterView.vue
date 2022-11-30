@@ -44,8 +44,14 @@ async function getLogin() {
     .catch((e) => {
       isError.value = true;
 
-      if (e.message == "Unauthorized") {
-        error.value = "Neteisingas el. paštas arba slaptažodis";
+      if (e.message == "Forbidden") {
+        error.value = "El. paštas sistemoje jau egzistuoja.";
+      } else if (e.message == "Bad Request") {
+        if (e.json.message == "Invalid email") {
+          error.value = "Įvestas el. paštas yra negalimas.";
+        } else if (e.json.message == "Not enough paramaters supplied") {
+          error.value = "Įvesti ne visi laukai.";
+        }
       } else {
         error.value = e;
       }
