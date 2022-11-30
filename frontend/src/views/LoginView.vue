@@ -1,14 +1,10 @@
 <script setup>
 import { ref, inject } from "vue";
-import { decodeToken } from "../utilities";
 
 const baseAPIURL = inject("baseAPIURL");
 
 const email = ref("");
 const password = ref("");
-
-const response = ref(null);
-const isLoading = ref(true);
 
 async function getLogin() {
   return fetch(baseAPIURL + "/login", {
@@ -32,20 +28,27 @@ async function getLogin() {
     })
     .then((json) => {
       localStorage.setItem("token", json.token);
-      delete json.token;
-      response.value = json;
-      isLoading.value = false;
+      window.location = "/";
     });
 }
 </script>
 
 <template>
   <h1>Prisijungimo forma</h1>
-  El. paštas: <input type="email" v-model="email" /> Slaptažodis:
-  <input type="password" v-model="password" />
-  <button @click="getLogin">Login</button>
-
-  <div v-show="!isLoading">{{ decodeToken() }}</div>
+  <div class="input">
+    El. paštas:
+    <input type="email" v-model="email" />
+  </div>
+  <div class="input">
+    Slaptažodis:
+    <input type="password" v-model="password" />
+  </div>
+  <button @click="getLogin">Prisijungti</button>
 </template>
 
-<style></style>
+<style>
+.input {
+  display: grid;
+  grid-template-columns: 100px 300px;
+}
+</style>
