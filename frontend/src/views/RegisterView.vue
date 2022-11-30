@@ -67,7 +67,7 @@ async function getLogin() {
     Slaptažodis:
     <input type="password" v-model="password" />
   </div>
-  <button @click="getLogin">Prisijungti</button>
+  <button @click="getLogin">Registruotis</button>
   <div v-show="isError">{{ error }}</div>
   <div v-show="isValid">
     Sėkmingai užregistruotas vartotojas {{ registeredUser }}.
