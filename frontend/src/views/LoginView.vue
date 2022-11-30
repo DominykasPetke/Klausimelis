@@ -6,6 +6,9 @@ const baseAPIURL = inject("baseAPIURL");
 const email = ref("");
 const password = ref("");
 
+const isError = ref(false);
+const error = ref(null);
+
 async function getLogin() {
   return fetch(baseAPIURL + "/login", {
     method: "POST",
@@ -29,6 +32,15 @@ async function getLogin() {
     .then((json) => {
       localStorage.setItem("token", json.token);
       window.location = "/";
+    })
+    .catch((e) => {
+      isError.value = true;
+
+      if (e.message == "Unauthorized") {
+        error.value = "Neteisingas el. paštas arba slaptažodis";
+      } else {
+        error.value = e;
+      }
     });
 }
 </script>
@@ -44,6 +56,7 @@ async function getLogin() {
     <input type="password" v-model="password" />
   </div>
   <button @click="getLogin">Prisijungti</button>
+  <div v-show="isError">{{ error }}</div>
 </template>
 
 <style>
