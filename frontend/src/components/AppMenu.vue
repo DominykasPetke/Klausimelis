@@ -1,10 +1,9 @@
 <script setup>
-import MenuButton from "./MenuButton.vue";
 import { ref } from "vue";
 
 defineProps({});
 
-const menuItems = [
+const menuItems = ref([
   {
     name: "Sritys",
     link: "/topics",
@@ -25,7 +24,7 @@ const menuItems = [
     name: "Prisijungti",
     link: "/login",
   },
-];
+]);
 
 const navVisible = ref(false);
 
@@ -36,7 +35,9 @@ const toggleMenu = () => {
 
 <template>
   <div class="menu" v-for="item in menuItems" :key="item.name">
-    <MenuButton :text="item.name" :link="item.link"></MenuButton>
+    <div class="button">
+      <RouterLink :to="item.link">{{ item.name }}</RouterLink>
+    </div>
   </div>
   <div class="mobileMenu">
     <button class="burger" @click="toggleMenu">
@@ -44,7 +45,9 @@ const toggleMenu = () => {
     </button>
     <nav v-show="navVisible">
       <div v-for="item in menuItems" :key="item.name">
-        <MenuButton :text="item.name" :link="item.link"></MenuButton>
+        <div class="button">
+          <RouterLink :to="item.link">{{ item.name }}</RouterLink>
+        </div>
       </div>
     </nav>
   </div>
@@ -68,6 +71,23 @@ const toggleMenu = () => {
 
   .mobileMenu {
     display: none;
+  }
+
+  .button {
+    height: 100%;
+    margin: 0 0.5rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .button {
+    margin: 0;
+    width: 100%;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgba(102, 153, 0, 0.2);
+    background-color: rgba(255, 255, 255, 0.1);
+    text-align: center;
   }
 }
 </style>
