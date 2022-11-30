@@ -10,6 +10,13 @@ const isError = ref(false);
 const error = ref(null);
 
 async function getLogin() {
+  if (password.value.length <= 0 || email.value.length <= 0) {
+    isError.value = true;
+    error.value = "Būtina įvesti visus laukus.";
+
+    return null;
+  }
+
   return fetch(baseAPIURL + "/login", {
     method: "POST",
     body: JSON.stringify({ email: email.value, password: password.value }),

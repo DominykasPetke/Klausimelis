@@ -13,7 +13,18 @@ const error = ref(null);
 const registeredUser = ref("");
 const isValid = ref(false);
 
-async function getLogin() {
+async function register() {
+  if (
+    username.value.length <= 0 ||
+    password.value.length <= 0 ||
+    email.value.length <= 0
+  ) {
+    isError.value = true;
+    error.value = "Būtina įvesti visus laukus.";
+
+    return null;
+  }
+
   return fetch(baseAPIURL + "/register", {
     method: "POST",
     body: JSON.stringify({
@@ -39,6 +50,8 @@ async function getLogin() {
     })
     .then((json) => {
       registeredUser.value = json.username;
+
+      isError.value = false;
       isValid.value = true;
     })
     .catch((e) => {
@@ -47,11 +60,16 @@ async function getLogin() {
       if (e.message == "Forbidden") {
         error.value = "El. paštas sistemoje jau egzistuoja.";
       } else if (e.message == "Bad Request") {
-        if (e.json.message == "Invalid email") {
-          error.value = "Įvestas el. paštas yra negalimas.";
-        } else if (e.json.message == "Not enough paramaters supplied") {
-          error.value = "Įvesti ne visi laukai.";
-        }
+        e.json.then((json) => {
+          console.log(json);
+          console.log(json.message);
+
+          if (json.message == "Invalid email") {
+            error.value = "Įvestas el. paštas yra negalimas.";
+          } else if (json.message == "Not enough paramaters supplied") {
+            error.value = "Įvesti ne visi laukai.";
+          }
+        });
       } else {
         error.value = e;
       }
@@ -73,7 +91,7 @@ async function getLogin() {
     Slaptažodis:
     <input type="password" v-model="password" />
   </div>
-  <button @click="getLogin">Registruotis</button>
+  <button @click="register">Registruotis</button>
   <div v-show="isError">{{ error }}</div>
   <div v-show="isValid">
     Sėkmingai užregistruotas vartotojas {{ registeredUser }}.
