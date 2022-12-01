@@ -59,7 +59,7 @@ h1 {
   margin-right: 0.5rem;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
   header {
     display: flex;
     place-items: center;

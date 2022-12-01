@@ -84,7 +84,7 @@ onBeforeMount(() => {
   width: 100%;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
   .menu {
     display: flex;
   }
@@ -99,7 +99,7 @@ onBeforeMount(() => {
   }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 768px) {
   .button {
     margin: 0;
     width: 100%;
