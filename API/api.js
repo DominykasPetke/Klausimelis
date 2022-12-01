@@ -589,6 +589,7 @@ router.get(
 
             if (rows.length == 0) {
               res.status(200).json([]);
+              return;
             }
 
             if (rows[0].FK_themeId != req.params.themeId) {
