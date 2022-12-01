@@ -1,6 +1,6 @@
 <script setup>
 import { ref, inject, onBeforeMount } from "vue";
-import { isAdmin } from "../utilities";
+import { isCorrectTeacher, isTeacherOnAny } from "../utilities";
 import DeleteModal from "../modals/DeleteModal.vue";
 import TopicThemeModal from "../modals/TopicThemeModal.vue";
 
@@ -32,7 +32,7 @@ onBeforeMount(() => {
   getTopics();
 });
 
-const selectedTopic = ref(null);
+const selectedTopicId = ref(null);
 const isThemesLoading = ref(true);
 const themes = ref([]);
 
@@ -41,8 +41,24 @@ function onSelectChange() {
   getThemes();
 }
 
+function getTopicUserId() {
+  if (topics.value == null) {
+    return 0;
+  }
+
+  const result = topics.value.find((element) => {
+    return element.user.id == selectedTopicId.value;
+  });
+
+  if (result == null) {
+    return 0;
+  }
+
+  return result.user.id;
+}
+
 async function getThemes() {
-  return fetch(baseAPIURL + "/topics/" + selectedTopic.value + "/themes")
+  return fetch(baseAPIURL + "/topics/" + selectedTopicId.value + "/themes")
     .then((res) => {
       // a non-200 response code
       if (!res.ok) {
@@ -97,7 +113,7 @@ function closeCreateModal() {
   <div v-show="!isTopicsLoading">
     <div class="grid">
       Pasirinkite sritį:
-      <select @change="onSelectChange()" v-model="selectedTopic">
+      <select @change="onSelectChange()" v-model="selectedTopicId">
         <option v-for="topic in topics" :key="topic.id" :value="topic.id">
           {{ topic.name }}
         </option>
@@ -110,8 +126,8 @@ function closeCreateModal() {
           <th>Pavadinimas</th>
           <th>Aprašymas</th>
           <th>Kūrėjas</th>
-          <th v-if="isAdmin()">Redaguoti</th>
-          <th v-if="isAdmin()">Trinti</th>
+          <th v-if="isTeacherOnAny(themes)">Redaguoti</th>
+          <th v-if="isTeacherOnAny(themes)">Trinti</th>
         </tr>
         <tr v-for="item in themes" :key="item.id">
           <td>{{ item.name }}</td>
@@ -122,19 +138,20 @@ function closeCreateModal() {
               >{{ item.user.username }}</RouterLink
             >
           </td>
-          <td v-if="isAdmin()">
+          <td v-if="isCorrectTeacher(item.user.id)">
             <a @click="showEditModal(item.id)">Redaguoti</a>
             <TopicThemeModal
               :item="item"
               method="PATCH"
-              :link="'/topics/' + selectedTopic + '/themes/' + item.id"
+              :link="'/topics/' + selectedTopicId + '/themes/' + item.id"
               mode="edit"
               thing="theme"
               v-show="openedEditModal == item.id"
               @close="closeEditModal"
             />
           </td>
-          <td v-if="isAdmin()">
+          <td v-else-if="isTeacherOnAny(themes)"></td>
+          <td v-if="isCorrectTeacher(item.user.id)">
             <a @click="showDeleteModal(item.id)">Ištrinti</a>
             <DeleteModal
               :item="item"
@@ -143,15 +160,17 @@ function closeCreateModal() {
               @close="closeDeleteModal"
             />
           </td>
+          <td v-else-if="isTeacherOnAny(themes)"></td>
         </tr>
       </table>
-      <a v-if="isAdmin()" @click="showCreateModal">Sukurti naują temą</a>
-
+      <a v-if="isCorrectTeacher(getTopicUserId())" @click="showCreateModal"
+        >Sukurti naują temą</a
+      >
       <TopicThemeModal
         v-show="openedCreateModal"
         @close="closeCreateModal"
         method="POST"
-        :link="'/topics/' + selectedTopic + '/themes'"
+        :link="'/topics/' + selectedTopicId + '/themes'"
         mode="create"
         thing="theme"
       />

@@ -84,3 +84,15 @@ export function isCorrectTeacher(id) {
     token != null && (token.role >= 2 || (token.role >= 1 && token.id == id))
   );
 }
+
+export function isTeacherOnAny(array) {
+  const token = decodeToken();
+
+  return (
+    token != null &&
+    token.role >= 1 &&
+    array.some((value) => {
+      return value.user.id == token.id;
+    })
+  );
+}
