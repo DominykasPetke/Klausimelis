@@ -68,7 +68,5 @@ export function decodeToken() {
   delete decoded.exp;
   delete decoded.iss;
 
-  console.log(decoded);
-
   return decoded;
 }
