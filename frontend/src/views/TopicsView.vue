@@ -31,14 +31,14 @@ onBeforeMount(() => {
   getData();
 });
 
-const isModalVisible = ref(false);
+const openModal = ref(0);
 
-function showModal() {
-  isModalVisible.value = true;
+function showModal(id) {
+  openModal.value = id;
 }
 
 function closeModal() {
-  isModalVisible.value = false;
+  openModal.value = 0;
 }
 </script>
 
@@ -62,10 +62,8 @@ function closeModal() {
           >
         </td>
         <td v-if="isAdmin()">
-          <a @click="showModal()">Ištrinti</a>
-          <!-- <button type="button" class="btn" @click="showModal">Open Modal!</button> -->
-
-          <DeleteModal v-show="isModalVisible" @close="closeModal" />
+          <a @click="showModal(item.id)">Ištrinti</a>
+          <DeleteModal v-show="openModal == item.id" @close="closeModal" />
         </td>
       </tr>
     </table>
