@@ -37,6 +37,7 @@ function close() {
   display: flex;
   flex-direction: column;
   padding: 2em 1em;
+  z-index: 101;
 }
 
 .btn-close {
@@ -48,14 +49,14 @@ function close() {
   padding: 10px;
   cursor: pointer;
   font-weight: bold;
-  color: #4aae9b;
+  color: rgb(102, 153, 0);
   background: transparent;
 }
 
 .btn-green {
   color: white;
-  background: #4aae9b;
-  border: 1px solid #4aae9b;
+  background: rgb(102, 153, 0);
+  border: 1px solid rgb(102, 153, 0);
   border-radius: 2px;
 }
 </style>
