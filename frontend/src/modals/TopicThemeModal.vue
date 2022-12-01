@@ -1,5 +1,5 @@
 <script setup>
-import { ref, inject } from "vue";
+import { ref, inject, onBeforeMount } from "vue";
 
 const emit = defineEmits(["close"]);
 const props = defineProps({
@@ -73,6 +73,13 @@ function getMode2() {
       break;
   }
 }
+
+onBeforeMount(() => {
+  if (props.item != null) {
+    name.value = props.item.name;
+    description.value = props.item.description;
+  }
+});
 </script>
 
 <template>
@@ -145,7 +152,7 @@ function getMode2() {
   margin-top: 8px;
   text-align: right;
   display: grid;
-  grid-template-columns: 1fr 60px;
+  grid-template-columns: 1fr 80px;
   align-content: flex-end;
 }
 

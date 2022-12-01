@@ -42,6 +42,16 @@ function closeDeleteModal() {
   openedDeleteModal.value = 0;
 }
 
+const openedEditModal = ref(0);
+
+function showEditModal(id) {
+  openedEditModal.value = id;
+}
+
+function closeEditModal() {
+  openedEditModal.value = 0;
+}
+
 const openedCreateModal = ref(false);
 
 function showCreateModal() {
@@ -61,6 +71,7 @@ function closeCreateModal() {
         <th>Pavadinimas</th>
         <th>Aprašymas</th>
         <th>Kūrėjas</th>
+        <th v-if="isAdmin()">Redaguoti</th>
         <th v-if="isAdmin()">Trinti</th>
       </tr>
       <tr v-for="item in topics" :key="item.id">
@@ -71,6 +82,18 @@ function closeCreateModal() {
             :to="{ path: '/user', query: { userId: item.user.id } }"
             >{{ item.user.username }}</RouterLink
           >
+        </td>
+        <td v-if="isAdmin()">
+          <a @click="showEditModal(item.id)">Redaguoti</a>
+          <TopicThemeModal
+            :item="item"
+            method="PATCH"
+            :link="'/topics/' + item.id"
+            mode="edit"
+            thing="topic"
+            v-show="openedEditModal == item.id"
+            @close="closeEditModal"
+          />
         </td>
         <td v-if="isAdmin()">
           <a @click="showDeleteModal(item.id)">Ištrinti</a>
