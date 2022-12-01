@@ -83,7 +83,7 @@ function closeCreateModal() {
         </td>
       </tr>
     </table>
-    <a @click="showCreateModal">Sukurti naują sritį</a>
+    <a v-if="isAdmin()" @click="showCreateModal">Sukurti naują sritį</a>
 
     <TopicThemeModal
       v-show="openedCreateModal"
