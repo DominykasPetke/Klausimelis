@@ -3,6 +3,7 @@ import { ref, inject, onBeforeMount } from "vue";
 import { isCorrectTeacher, isTeacherOnAny } from "../utilities";
 import DeleteModal from "../modals/DeleteModal.vue";
 import QuestionModal from "../modals/QuestionModal.vue";
+import QuestionAnswerModal from "../modals/QuestionAnswerModal.vue";
 
 const baseAPIURL = inject("baseAPIURL");
 const token = localStorage.getItem("token");
@@ -175,6 +176,16 @@ function showCreateModal() {
 function closeCreateModal() {
   openedCreateModal.value = false;
 }
+
+const openedQuestionModal = ref(0);
+
+function showQuestionModal(id) {
+  openedQuestionModal.value = id;
+}
+
+function closeQuestionModal() {
+  openedQuestionModal.value = 0;
+}
 </script>
 
 <template>
@@ -209,7 +220,15 @@ function closeCreateModal() {
           <th v-if="isTeacherOnAny(questions)">Trinti</th>
         </tr>
         <tr v-for="item in questions" :key="item.id">
-          <td>{{ item.question }}</td>
+          <td v-if="token == null">{{ item.question }}</td>
+          <td v-else>
+            <a @click="showQuestionModal(item.id)">{{ item.question }}</a
+            ><QuestionAnswerModal
+              :item="item"
+              v-show="openedQuestionModal == item.id"
+              @close="closeQuestionModal"
+            />
+          </td>
           <td>
             <RouterLink
               :to="{ path: '/user', query: { userId: item.user.id } }"
