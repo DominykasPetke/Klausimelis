@@ -68,6 +68,10 @@ async function getLogin() {
   </div>
   <button @click="getLogin">Prisijungti</button>
   <div v-show="isError">{{ error }}</div>
+  <br />
+  <p>
+    Neturite paskyros? <RouterLink to="/register"> Registruokitės</RouterLink>
+  </p>
 </template>
 
 <style>
