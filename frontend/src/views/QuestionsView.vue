@@ -254,7 +254,9 @@ function closeCreateModal() {
           <td v-else-if="isTeacherOnAny(questions)"></td>
         </tr>
       </table>
-      <a v-if="isCorrectTeacher(getThemeUserId())" @click="showCreateModal"
+      <a
+        v-if="selectedThemeId != null && isCorrectTeacher(getThemeUserId())"
+        @click="showCreateModal"
         >Sukurti naują klausimą</a
       >
       <QuestionModal
@@ -264,7 +266,7 @@ function closeCreateModal() {
         :link="
           '/topics/' +
           selectedTopicId +
-          '/themes' +
+          '/themes/' +
           selectedThemeId +
           '/questions/'
         "
