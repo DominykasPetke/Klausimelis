@@ -587,6 +587,10 @@ router.get(
               return;
             }
 
+            if (rows.length == 0) {
+              res.status(200).json([]);
+            }
+
             if (rows[0].FK_themeId != req.params.themeId) {
               res.status(404).json(misc.not_found_error);
               return;
