@@ -9,7 +9,7 @@ function close() {
 <template>
   <div class="modal-backdrop">
     <div class="modal">
-      <p>A LOT MORE TEXT!</p>
+      <p>Ar jūs norite tai ištrinti?</p>
       <button type="button" class="btn-close" @click="close">x</button>
     </div>
   </div>
@@ -26,6 +26,7 @@ function close() {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 100;
 }
 
 .modal {

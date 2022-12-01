@@ -70,3 +70,17 @@ export function decodeToken() {
 
   return decoded;
 }
+
+export function isAdmin() {
+  const token = decodeToken();
+
+  return token != null && token.role >= 2;
+}
+
+export function isCorrectTeacher(id) {
+  const token = decodeToken();
+
+  return (
+    token != null && (token.role >= 2 || (token.role >= 1 && token.id == id))
+  );
+}

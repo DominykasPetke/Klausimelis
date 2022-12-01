@@ -90,6 +90,7 @@ footer {
   grid-template-columns: 130px 1fr;
   column-gap: 8px;
   grid-auto-rows: min-content;
+  z-index: 0;
 }
 
 footer .right {
