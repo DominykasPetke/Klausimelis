@@ -16,11 +16,21 @@ const token = localStorage.getItem("token");
 const name = ref("");
 const description = ref("");
 
+const errorMessage = ref("");
+const isError = ref(false);
+
 function close() {
   emit("close");
 }
 
 async function createThing() {
+  if (name.value.length <= 0) {
+    isError.value = true;
+    errorMessage.value = "Pavadinimą įvesti būtina.";
+
+    return null;
+  }
+
   return fetch(baseAPIURL + props.link, {
     method: props.method,
     headers: {
@@ -38,6 +48,21 @@ async function createThing() {
     })
     .then(() => {
       window.location = "/";
+    })
+    .catch((e) => {
+      console.log(e);
+      console.log(e.json.message);
+      // errorMessage.value = e.json.message;
+
+      if (e.message == "Bad Request") {
+        if (e.json.message == "Not enough paramaters supplied") {
+          errorMessage.value = "Įvesti ne visi laukai.";
+        } else {
+          errorMessage.value = e;
+        }
+      } else {
+        errorMessage.value = e;
+      }
     });
 }
 
@@ -99,6 +124,7 @@ onBeforeMount(() => {
         <p></p>
         <button type="button" @click="createThing">{{ getMode2() }}</button>
       </div>
+      <div v-show="isError">{{ errorMessage }}</div>
     </div>
   </div>
 </template>

@@ -15,11 +15,35 @@ const token = localStorage.getItem("token");
 const question = ref("");
 const answers = ref([]);
 
+const errorMessage = ref("");
+const isError = ref(false);
+
 function close() {
   emit("close");
 }
 
 async function createThing() {
+  if (question.value.length <= 0) {
+    isError.value = true;
+    errorMessage.value = "Klausimą įvesti būtina.";
+
+    return null;
+  }
+
+  if (answers.value.length <= 0) {
+    isError.value = true;
+    errorMessage.value = "Turi būti bent 1 atsakymas.";
+
+    return null;
+  }
+
+  if (answers.value.some((element) => element.is_correct) <= 0) {
+    isError.value = true;
+    errorMessage.value = "Turi būti bent 1 teisingas atsakymas.";
+
+    return null;
+  }
+
   return fetch(baseAPIURL + props.link, {
     method: props.method,
     headers: {
@@ -118,6 +142,8 @@ onBeforeMount(() => {
         <p></p>
         <button type="button" @click="createThing">{{ getMode2() }}</button>
       </div>
+
+      <div v-show="isError">{{ errorMessage }}</div>
     </div>
   </div>
 </template>
