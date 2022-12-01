@@ -63,7 +63,12 @@ function closeModal() {
         </td>
         <td v-if="isAdmin()">
           <a @click="showModal(item.id)">Ištrinti</a>
-          <DeleteModal v-show="openModal == item.id" @close="closeModal" />
+          <DeleteModal
+            :item="item"
+            :link="'/topics/' + item.id"
+            v-show="openModal == item.id"
+            @close="closeModal"
+          />
         </td>
       </tr>
     </table>
