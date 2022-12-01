@@ -47,7 +47,7 @@ function getTopicUserId() {
   }
 
   const result = topics.value.find((element) => {
-    return element.user.id == selectedTopicId.value;
+    return element.id == selectedTopicId.value;
   });
 
   if (result == null) {
