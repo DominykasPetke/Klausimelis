@@ -66,7 +66,7 @@ function closeCreateModal() {
 <template>
   <h1>Klausimėlio sritys:</h1>
   <div v-show="!isLoading">
-    <table class="themeTable">
+    <table class="topicTable">
       <tr>
         <th>Pavadinimas</th>
         <th>Aprašymas</th>
@@ -120,7 +120,7 @@ function closeCreateModal() {
 </template>
 
 <style>
-.themeTable,
+.topicTable,
 th,
 td {
   border-width: 1px;
