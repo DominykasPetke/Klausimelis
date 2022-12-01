@@ -1,3 +1,5 @@
+const baseAPIURL = import.meta.env.VITE_API_BASE_URL;
+
 function decodeUnicode(str) {
   // Going backward: from byte-stream to percent-encoding, to original string.
   return decodeURIComponent(
@@ -8,6 +10,32 @@ function decodeUnicode(str) {
       })
       .join("")
   );
+}
+
+async function refreshToken() {
+  const token = localStorage.getItem("token");
+
+  return fetch(baseAPIURL + "/login", {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + (token == null ? "" : token),
+    },
+  })
+    .then((res) => {
+      // a non-200 response code
+      if (!res.ok) {
+        // create error instance with HTTP status text
+        const error = new Error(res.statusText);
+        error.json = res.json();
+        throw error;
+      }
+
+      const ret = res.json();
+      return ret;
+    })
+    .then((json) => {
+      localStorage.setItem("token", json.token);
+    });
 }
 
 export function decodeToken() {
@@ -30,6 +58,10 @@ export function decodeToken() {
   if (timestamp >= decoded.exp) {
     localStorage.removeItem("token");
     return null;
+  }
+
+  if (timestamp >= decoded.exp - 30 * 60) {
+    refreshToken();
   }
 
   delete decoded.iat;
