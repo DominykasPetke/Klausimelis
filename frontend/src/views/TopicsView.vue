@@ -2,6 +2,7 @@
 import { ref, inject, onBeforeMount } from "vue";
 import { isAdmin } from "../utilities";
 import DeleteModal from "../modals/DeleteModal.vue";
+import TopicThemeModal from "../modals/TopicThemeModal.vue";
 
 const baseAPIURL = inject("baseAPIURL");
 const topics = ref([]);
@@ -31,14 +32,24 @@ onBeforeMount(() => {
   getData();
 });
 
-const openModal = ref(0);
+const openedDeleteModal = ref(0);
 
-function showModal(id) {
-  openModal.value = id;
+function showDeleteModal(id) {
+  openedDeleteModal.value = id;
 }
 
-function closeModal() {
-  openModal.value = 0;
+function closeDeleteModal() {
+  openedDeleteModal.value = 0;
+}
+
+const openedCreateModal = ref(false);
+
+function showCreateModal() {
+  openedCreateModal.value = true;
+}
+
+function closeCreateModal() {
+  openedCreateModal.value = false;
 }
 </script>
 
@@ -62,16 +73,26 @@ function closeModal() {
           >
         </td>
         <td v-if="isAdmin()">
-          <a @click="showModal(item.id)">Ištrinti</a>
+          <a @click="showDeleteModal(item.id)">Ištrinti</a>
           <DeleteModal
             :item="item"
             :link="'/topics/' + item.id"
-            v-show="openModal == item.id"
-            @close="closeModal"
+            v-show="openedDeleteModal == item.id"
+            @close="closeDeleteModal"
           />
         </td>
       </tr>
     </table>
+    <a @click="showCreateModal">Sukurti naują sritį</a>
+
+    <TopicThemeModal
+      v-show="openedCreateModal"
+      @close="closeCreateModal"
+      method="POST"
+      link="/topics"
+      mode="create"
+      thing="topic"
+    />
   </div>
 </template>
 

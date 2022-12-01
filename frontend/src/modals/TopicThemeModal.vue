@@ -1,27 +1,33 @@
 <script setup>
-import { inject } from "vue";
+import { ref, inject } from "vue";
 
 const emit = defineEmits(["close"]);
 const props = defineProps({
-  item: { type: Object, required: true },
+  item: { type: Object, required: false },
+  mode: { type: String, required: true },
   link: { type: String, required: true },
+  method: { type: String, required: true },
+  thing: { type: String, required: true },
 });
 
 const baseAPIURL = inject("baseAPIURL");
 const token = localStorage.getItem("token");
 
+const name = ref("");
+const description = ref("");
+
 function close() {
   emit("close");
 }
 
-async function deleteThing() {
-  console.log(props.link);
-
+async function createThing() {
   return fetch(baseAPIURL + props.link, {
-    method: "DELETE",
+    method: props.method,
     headers: {
       Authorization: "Bearer " + (token == null ? "" : token),
+      "Content-Type": "application/json",
     },
+    body: JSON.stringify({ name: name.value, description: description.value }),
   })
     .then((res) => {
       if (!res.ok) {
@@ -34,20 +40,57 @@ async function deleteThing() {
       window.location = "/";
     });
 }
+
+function getThing() {
+  switch (props.thing) {
+    case "topic":
+      return "Srities";
+    case "theme":
+      return "Temos";
+    default:
+      break;
+  }
+}
+
+function getMode() {
+  switch (props.mode) {
+    case "edit":
+      return "redagavimas";
+    case "create":
+      return "kūrimas";
+    default:
+      break;
+  }
+}
+
+function getMode2() {
+  switch (props.mode) {
+    case "edit":
+      return "Redaguoti";
+    case "create":
+      return "Sukurti";
+    default:
+      break;
+  }
+}
 </script>
 
 <template>
   <div class="modal-backdrop">
     <div class="modal">
       <button type="button" class="btn-close" @click="close">x</button>
-      <p>Ar jūs norite tai ištrinti?</p>
-      <p v-show="item.name != null">Pavadinimas: {{ item.name }}</p>
-      <p v-show="item.description != null">Aprašymas: {{ item.description }}</p>
-      <p v-show="item.question != null">Klausimas: {{ item.question }}</p>
-      <div class="deleteButtonHolder">
+      <h1>{{ getThing() }} {{ getMode() }}</h1>
+      <div class="input">
+        Pavadinimas:
+        <input type="text" v-model="name" />
+      </div>
+      <div class="input">
+        Aprašymas:
+        <input type="text" v-model="description" />
+      </div>
+      <div class="buttonHolder">
         <p></p>
-        <button type="button" @click="close">Ne</button>
-        <button type="button" @click="deleteThing">Taip</button>
+        <button type="button" @click="createThing">{{ getMode2() }}</button>
       </div>
     </div>
   </div>
@@ -98,11 +141,16 @@ async function deleteThing() {
   border-radius: 2px;
 }
 
-.deleteButtonHolder {
+.buttonHolder {
   margin-top: 8px;
   text-align: right;
   display: grid;
-  grid-template-columns: 1fr 60px 60px;
+  grid-template-columns: 1fr 60px;
   align-content: flex-end;
+}
+
+.input {
+  display: grid;
+  grid-template-columns: 110px 300px;
 }
 </style>
