@@ -855,4 +855,15 @@ POST /api/v1/register
     "username": "Dėstytojas"
 }
 ```
+## Sistemos wireframe
+Sistemos wireframe paveikslas:
+![Sistemos wireframe](https://i.imgur.com/buQVLTB.png)
 
+Realus sistemos vaizdas:
+![Realus vaizdas](https://i.imgur.com/on8uRIR.png)
+
+## Išvados
+Sistemą sukurti pavyko.
+Su API sudėtingiausia buvo užtikrinti, jog įvedus netinkamus duomenis sistema grąžintų tinkamą klaidą.
+Prisijungimo srityje sudėtingiausia buvo išsiaiškinti kaip veikia `passport` biblioteka.
+Klientinėje dalyje trūko testavimo, taip pat dizainas buvo paprastas, nes dirbti su klientine dalimi, man, asmeniškai, nėra pats mėgstamiausias dalykas.
