@@ -155,7 +155,7 @@ function closeCreateModal() {
             <a @click="showDeleteModal(item.id)">Ištrinti</a>
             <DeleteModal
               :item="item"
-              :link="'/topics/' + item.id"
+              :link="'/topics/' + selectedTopicId + '/themes/' + item.id"
               v-show="openedDeleteModal == item.id"
               @close="closeDeleteModal"
             />
